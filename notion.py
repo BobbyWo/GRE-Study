@@ -5,7 +5,7 @@ from pprint import pprint
 class notion_API():
     def __init__(self):
         self.client = Client(auth="secret_yTKuSw2z5ZTk2UWEmW7wLZ5BCRXxYIA3UlnCYHczuG1", log_level=logging.DEBUG)
-        self.pageId = "3aef51bd5f654d748b40fae5b51ffc57"
+        self.pageId = "167ef7ae8cf04c949ca8771ba53bce86"
         self.tableId = ""
 
     def create_table(self):

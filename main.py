@@ -56,19 +56,28 @@ def translation():
     img_name = os.path.join("image", file[0])
     img = Image.open(img_name)
     s = str(pytesseract.image_to_string(img))
-    definition = dict_search.search(str(s).strip())
-    if len(definition) == 0:
-        content = [s, "", "", ""]
-        notion_call.insert_table_row(content)
-    for defi in definition:
-        words = dict(defi).get("words")
-        pos = dict(defi).get("pos")
-        words_pos = words + "\n" + f"({pos})"
-        english_meaning = dict(defi).get("pos")
-        chinese_meaning = dict(defi).get("chinese_meaning")
-        example = dict(defi).get("example")
-        content = [words_pos, english_meaning, chinese_meaning, example]
-        notion_call.insert_table_row(content)
+    choice = s.split("\n")
+    for word in choice:
+        if(word == "" or len(word) == 0):
+            continue
+        definition = ""
+        try:
+            definition = dict_search.search(str(word).strip())
+        except:
+            content = [word, "", "", ""]
+            notion_call.insert_table_row(content)
+        # if len(definition) == 0:
+        #     content = [word, "", "", ""]
+        #     notion_call.insert_table_row(content)
+        for defi in definition:
+            words = dict(defi).get("words")
+            pos = dict(defi).get("pos")
+            words_pos = words + "\n" + f"({pos})"
+            english_meaning = dict(defi).get("english_meaning")
+            chinese_meaning = dict(defi).get("chinese_meaning")
+            example = dict(defi).get("example")
+            content = [words_pos, english_meaning, chinese_meaning, example]
+            notion_call.insert_table_row(content)
 
 
 def create_new_table():
@@ -99,6 +108,7 @@ def on_click(x, y, button, pressed):
 
 
 if __name__ == '__main__':
+# def its():
     # os.remove(i_t_s())
     mouse_listener = mouse.Listener(
         on_click=on_click
