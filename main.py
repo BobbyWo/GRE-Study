@@ -21,11 +21,25 @@ def i_t_s():
     img_name = os.path.join("image", file[0])
     img = Image.open(img_name)
     s = str(pytesseract.image_to_string(img))
+    s = s.replace('-\n', '')
+    s = s.replace('\n', ' ')
     notion_call.paragraph_content(s, type="heading_3")
-    notion_call.create_table()
+    # notion_call.create_table()
     # pyperclip.copy(s)
     # print(s)
-    return img_name
+
+
+
+def i_t_s_1():
+    file = os.listdir("./image")
+    img_name = os.path.join("image", file[0])
+    img = Image.open(img_name)
+    s = str(pytesseract.image_to_string(img))
+    notion_call.paragraph_content(s, type="heading_3")
+    # notion_call.create_table()
+    # pyperclip.copy(s)
+    # print(s)
+
 
 
 def cap_image_to_string():
@@ -39,6 +53,20 @@ def cap_image_to_string():
     pic = pyscreenshot.grab(bbox=(pressed_location_x, pressed_location_y, released_location_x, released_location_y))
     pic.save(os.path.join("./image", "test.png"))
     i_t_s()
+    print("finished")
+
+
+def cap_image_to_string_1():
+    global pressed_location_x
+    global pressed_location_y
+    global released_location_x
+    global released_location_y
+    if released_location_y <= pressed_location_y or released_location_x <= pressed_location_x:
+        return
+    print("q")
+    pic = pyscreenshot.grab(bbox=(pressed_location_x, pressed_location_y, released_location_x, released_location_y))
+    pic.save(os.path.join("./image", "test.png"))
+    i_t_s_1()
     print("finished")
 
 
@@ -58,7 +86,7 @@ def translation():
     s = str(pytesseract.image_to_string(img))
     choice = s.split("\n")
     for word in choice:
-        if(word == "" or len(word) == 0):
+        if (word == "" or len(word) == 0):
             continue
         definition = ""
         try:
@@ -66,7 +94,7 @@ def translation():
         except:
             content = [word, "", "", ""]
             notion_call.insert_table_row(content)
-        # if len(definition) == 0:
+        # if len(definition) == 0:b   
         #     content = [word, "", "", ""]
         #     notion_call.insert_table_row(content)
         for defi in definition:
@@ -83,11 +111,13 @@ def translation():
 def create_new_table():
     notion_call.create_table()
 
+
 def paragraph_translation():
     print("p")
     s = str(pyperclip.paste())
     definition = dict_search.search(str(s).strip())
     pyperclip.copy(str(definition))
+
 
 # mouse monitor
 mouses = Controller()
@@ -108,7 +138,7 @@ def on_click(x, y, button, pressed):
 
 
 if __name__ == '__main__':
-# def its():
+    # def its():
     # os.remove(i_t_s())
     mouse_listener = mouse.Listener(
         on_click=on_click
@@ -117,7 +147,8 @@ if __name__ == '__main__':
         '<ctrl>+<alt>+a': cap_image_to_string,
         '<ctrl>+<alt>+t': translation,
         '<ctrl>+<alt>+n': create_new_table,
-        '<ctrl>+<alt>+p': paragraph_translation})
+        '<ctrl>+<alt>+p': paragraph_translation,
+        '<ctrl>+<alt>+q': cap_image_to_string_1})
     dict_search = cambridge_search.cambridge_search()
     notion_call = notion.notion_API()
     mouse_listener.start()

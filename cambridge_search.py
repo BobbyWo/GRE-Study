@@ -22,7 +22,6 @@ class cambridge_search():
         pos = self.driver.find_elements(By.CLASS_NAME, "pos.dpos")
         definitions = self.driver.find_elements(By.CLASS_NAME, "sense-body.dsense_b")
         list_defin = []
-        defin_dict = dict()
         for index in range(len(words)):
             word_dict_search += words[index].text + "\n"
             word_dict_search += "({0})".format(pos[index].text) + "\n"
@@ -34,6 +33,7 @@ class cambridge_search():
             word_dict_search += "chinese_meaning:\n" + chinese_meaning + "\n"
             word_dict_search += "example:\n" + example + "\n"
             print(word_dict_search)
+            defin_dict = dict()
             defin_dict["words"] = words[index].text
             defin_dict["pos"] = pos[index].text
             defin_dict["english_meaning"] = english_meaning
