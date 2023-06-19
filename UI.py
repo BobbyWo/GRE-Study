@@ -86,14 +86,14 @@ class MyWindow(QMainWindow):
         self.reset_notif_text()
 
     def snip_search_clicked(self):
-        self.snipWin = SnipWidget(True, False, self.search_browser, self)
+        self.snipWin = SnipWidget("I_T_S_Question", self)
         self.snipWin.notification_signal.connect(self.reset_notif_text)
         self.snipWin.show()
         self.notificationText.setText("Snipping... Press ESC to quit snipping")
         self.update_notif()
 
     def snip_copy_clicked(self):
-        self.snipWin = SnipWidget(False, True, self.search_browser, self)
+        self.snipWin = SnipWidget("I_T_S_Answer", self)
         self.snipWin.notification_signal.connect(self.reset_notif_text)
         self.snipWin.show()
         self.notificationText.setText("Snipping... Press ESC to quit snipping")
@@ -122,10 +122,9 @@ class MyWindow(QMainWindow):
 class SnipWidget(QMainWindow):
     notification_signal = pyqtSignal()
 
-    def __init__(self, open_in_browser, copy_str, search_browser, parent):
+    def __init__(self, type,parent):
         super(SnipWidget, self).__init__()
-        self.open_in_browser = open_in_browser
-        self.copy_str = copy_str
+        self.type = type
         root = tk.Tk()  # instantiates window
         screen_width = root.winfo_screenwidth()
         screen_height = root.winfo_screenheight()
@@ -140,14 +139,14 @@ class SnipWidget(QMainWindow):
         )
         self.setWindowFlags(QtCore.Qt.FramelessWindowHint)
         self.c = Communicate()
-        self.search_browser = search_browser
+        # self.search_browser = search_browser
 
         self.show()
 
-        if self.open_in_browser == True:
+        if self.I_T_S_Question == True:
             self.c.snip_saved.connect(self.searchAndOpen)
 
-        if self.copy_str == True:
+        if self.I_T_S_Answer == True:
             self.c.snip_saved.connect(self.IdAndCopy)
 
     def paintEvent(self, event):
