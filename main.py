@@ -23,8 +23,8 @@ def i_t_s():
     s = str(pytesseract.image_to_string(img))
     notion_call.paragraph_content(s, type="heading_3")
     notion_call.create_table()
-    # pyperclip.copy(s)
-    # print(s)
+    pyperclip.copy(s)
+    print(s)
     return img_name
 
 
@@ -64,7 +64,7 @@ def translation():
         words = dict(defi).get("words")
         pos = dict(defi).get("pos")
         words_pos = words + "\n" + f"({pos})"
-        english_meaning = dict(defi).get("pos")
+        english_meaning = dict(defi).get("english_meaning")
         chinese_meaning = dict(defi).get("chinese_meaning")
         example = dict(defi).get("example")
         content = [words_pos, english_meaning, chinese_meaning, example]
