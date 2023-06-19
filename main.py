@@ -94,7 +94,7 @@ def translation():
         except:
             content = [word, "", "", ""]
             notion_call.insert_table_row(content)
-        # if len(definition) == 0:b   
+        # if len(definition) == 0:b
         #     content = [word, "", "", ""]
         #     notion_call.insert_table_row(content)
         for defi in definition:
