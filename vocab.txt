@@ -24,29 +24,29 @@ homogenous
 loquacious
 pragmatic
 volatile
-    apathy
-    corroborate
-    ephemeral
-    laconic
-    mitigate
-    propriety
-    advocate
-    cacophony
-    enervate
-    ingenuous
-    misanthrope
-    paradox
-    venerate
-    antipathy
-    deride
-    eulogy
-    lethargic
-    obdurate
-    philanthropic
-    waver
-    bolster
-    dissonance
-    garrulous
-    malleable
-    ostentation
-    prevaricate
+apathy
+corroborate
+ephemeral
+laconic
+mitigate
+propriety
+advocate
+cacophony
+enervate
+ingenuous
+misanthrope
+paradox
+venerate
+antipathy
+deride
+eulogy
+lethargic
+obdurate
+philanthropic
+waver
+bolster
+dissonance
+garrulous
+malleable
+ostentation
+prevaricate

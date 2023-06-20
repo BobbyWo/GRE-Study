@@ -78,7 +78,13 @@ def paragraph_translation():
     print("p")
     s = str(pyperclip.paste())
     definition = dict_search.search(str(s).strip())
-    pyperclip.copy(str(definition))
+    defin = definition[0]
+    output_string = ''
+    output_string += defin['words'] + '\t' + f'({defin["pos"]})' + '\n'
+    output_string += 'english_meaning:\n' + defin['english_meaning'] + '\n'
+    output_string += 'chinese_meaning:\n' + defin['chinese_meaning'] + '\n'
+    output_string += 'example:\n' + defin['example'] + '\n'
+    pyperclip.copy(str(output_string))
 
 # mouse monitor
 mouses = Controller()
