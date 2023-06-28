@@ -2,7 +2,8 @@ from pprint import pprint
 
 from PyQt5 import QtWidgets, QtCore, QtGui
 from PyQt5.QtCore import pyqtSignal, QObject
-from PyQt5.QtWidgets import QApplication, QMainWindow, QComboBox, QLabel, QPushButton, QGroupBox
+from PyQt5.QtGui import QFont
+from PyQt5.QtWidgets import *
 import tkinter as tk
 from PIL import ImageGrab
 import sys
@@ -24,8 +25,8 @@ class Communicate(QObject):
 class MyWindow(QMainWindow):
     def __init__(self, parent=None):
         super(MyWindow, self).__init__()
-        self.win_width = 650
-        self.win_height = 300
+        self.win_width = 900
+        self.win_height = 600
         self.setGeometry(50, 50, self.win_width, self.win_height)
         self.setWindowTitle("Snipping Tool for Programmers")
         self.dict_search = cambridge_search.cambridge_search()
@@ -73,18 +74,42 @@ class MyWindow(QMainWindow):
         x += 1
 
         self.paraTrans = QPushButton(self)
-        self.paraTrans.setText("Paragraph trans")
+        self.paraTrans.setText("Image to String(translation)")
         self.paraTrans.move(int((self.win_width / 4 * (x - 1)) + 10), 75)
         self.paraTrans.setFixedSize(150, 40)
         self.paraTrans.clicked.connect(self.ParagraphTranslation_Button_clicked)
+        x += 1
 
+        self.comment = QPushButton(self)
+        self.comment.setText("Question Vocab Search")
+        self.comment.move(10, 170)
+        self.comment.setFixedSize(150, 40)
+        self.comment.clicked.connect(self.Question_Vocab_Search_Button_clicked)
+
+        self.searchWordLable = QLabel(self)
+        self.searchWordLable.move(10, 125)
+        self.searchWordLable.setText('search Word')
+        self.searchWordLable.adjustSize()
+
+        self.searchWord = QLineEdit(self)
+        self.searchWord.move(10,145)
+        self.searchWord.setFixedSize(self.win_width -20,20)
+
+        self.layout = QtWidgets.QHBoxLayout()
         self.notificationBox = QGroupBox("Notification Box", self)
-        self.notificationBox.move(10, 135)
-        self.notificationBox.setFixedSize(self.win_width - 20, 55)
-
+        self.notificationBox.move(10, 220)
         self.notificationText = QLabel(self)
-        self.notificationText.move(20, 145)
-        self.reset_notif_text()
+
+        self.layout.addWidget(self.notificationText)
+
+        self.initializedNoti()
+    def initializedNoti(self):
+        self.notificationBox.setFixedSize(self.win_width - 20, 55)
+        self.layout = QtWidgets.QHBoxLayout()
+        self.notificationText = QLabel(self)
+        self.layout.addWidget(self.notificationText)
+        self.notificationBox.setLayout(self.layout)
+
 
     def Question_Button_clicked(self):
         self.snipWin = SnipWidget("I_T_S_Question", self)
@@ -110,25 +135,66 @@ class MyWindow(QMainWindow):
         self.notificationText.setText("paragraph translation button clicked")
         self.update_notif()
 
+    def Question_Vocab_Search_Button_clicked(self):
+        search_word = self.searchWord.text()
+        definition = self.dict_search.search(search_word)
+        if len(definition) == 0:
+            content = [search_word, "", "", ""]
+        output_str = ''
+        defiList = []
+        for defi in definition:
+            words = dict(defi).get("words")
+            pos = dict(defi).get("pos")
+            words_pos = words + f"({pos})" + '\n\n'
+            english_meaning = dict(defi).get("english_meaning") + '\n\n'
+            chinese_meaning = dict(defi).get("chinese_meaning") + '\n\n'
+            example = dict(defi).get("example") + '\n\n'
+            output_str = words_pos + "english_meaning:\n" + english_meaning + "chinese_meaning:\n" + chinese_meaning + "example:\n" + example +'\n\n\n'
+            defiList.append(output_str)
+        # pyperclip.copy(output_str)
+        if len(defiList) > 1:
+            self.giveChoice(defiList)
+
+    def giveChoice(self,defiList):
+        print(self.notificationText)
+        self.notificationText.deleteLater()
+        self.choice_dict = {}
+        for i,numDefi in enumerate(defiList):
+            choice = QtWidgets.QVBoxLayout()
+            defi = QLabel(self)
+            defi.setText(numDefi)
+            defi.setWordWrap(True)
+            defi.setFont(QFont('Arial', 11))
+            defi.setStyleSheet("border: 1px solid black;padding-top:20px;padding-left:10px;padding-right:10px")
+            choice.addWidget(defi)
+            key = f"choiceButton{i}"
+            value = QPushButton(self)
+            value.setText("accept")
+            value.setProperty("defi",defi.text())
+
+            self.choice_dict[key]=value
+            self.choice_dict[key].clicked.connect(lambda checked, a=key:self.choiceButtonClicked(a))
+
+            choice.addWidget(value)
+            self.layout.addLayout(choice)
+        self.notificationBox.setFixedSize(self.win_width-20,300)
+
+    def choiceButtonClicked(self,key):
+        pyperclip.copy(self.choice_dict[key].property("defi"))
+        for all in self.notificationBox.children():
+            all.deleteLater()
+        self.initializedNoti()
 
     def onChanged(self, text):
         temp_text = f'Page changed to {text}. \n'
         self.notificationText.setText(temp_text)
-        self.update_notif()
         self.notion_call.change_page(self.page[text])
-
-    def reset_notif_text(self):
-        self.notificationText.setText("Idle...")
-        self.update_notif()
 
     def define_notif_text(self, msg):
         print('notification was sent')
         self.notificationText.setText('notification was sent')
         self.update_notif()
 
-    def update_notif(self):
-        self.notificationText.move(20, 155)
-        self.notificationText.adjustSize()
 
 
 class SnipWidget(QMainWindow):
@@ -164,6 +230,7 @@ class SnipWidget(QMainWindow):
 
         if self.type == "paraTrans":
             self.c.snip_saved.connect(self.paraTrans)
+
 
     def paintEvent(self, event):
         if self.is_snipping:
@@ -246,6 +313,25 @@ class SnipWidget(QMainWindow):
                 example += dict(defi).get("example") + '\n\n'
             content = [words_pos, english_meaning, chinese_meaning, example]
             self.parent.notion_call.insert_table_row(content)
+    #
+    # def paraTrans(self):
+    #     img_str = self.imgToStr(self.snipped_image)
+    #     words_to_search = img_str.split('\n')[:-1]
+    #     for words in words_to_search:
+    #         definition = self.parent.dict_search.search(words)
+    #         if len(definition) == 0:
+    #             content = [words, "", "", ""]
+    #             self.parent.notion_call.insert_table_row(content)
+    #         words_pos=english_meaning=chinese_meaning=example = ''
+    #         for defi in definition:
+    #             words = dict(defi).get("words")
+    #             pos = dict(defi).get("pos")
+    #             words_pos += words + "\n" + f"({pos})" + '\n\n'
+    #             english_meaning += dict(defi).get("english_meaning") + '\n\n\n'
+    #             chinese_meaning += dict(defi).get("chinese_meaning") + '\n\n\n'
+    #             example += dict(defi).get("example") + '\n\n'
+    #         content = [words_pos, english_meaning, chinese_meaning, example]
+    #         self.parent.notion_call.insert_table_row(content)
 
     def find_str(self, image_data):
 
