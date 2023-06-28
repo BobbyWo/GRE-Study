@@ -1,13 +1,26 @@
 import logging
 
+
 from notion_client import Client
 from pprint import pprint
 class notion_API():
     def __init__(self):
-        self.client = Client(auth="secret_yTKuSw2z5ZTk2UWEmW7wLZ5BCRXxYIA3UlnCYHczuG1", log_level=logging.DEBUG)
-        self.pageId = "3aef51bd5f654d748b40fae5b51ffc57"
-        self.tableId = ""
-
+        self.client = Client(auth="secret_PEonGD7yiAodtLiy2LiCVM5qSSv424FnhZ9fzP9DW1v", log_level=logging.DEBUG)
+        self.pageId = "d29e6dd696be4cd39443eb4b34269169"
+        with open('table_Id.txt','r') as f:
+            self.tableId = f.readline()
+    def change_page(self,pageId):
+        self.pageId = pageId
+    def get_block_list(self):
+        my_page = self.client.blocks.children.list(self.pageId)
+        page_dict = dict()
+        page_dict['home_page'] = self.pageId
+        for pages in my_page['results']:
+            page = dict(pages)
+            for key in page.keys():
+                if key == 'child_page':
+                    page_dict[page[key]['title']] = page['id']
+        return page_dict
     def create_table(self):
         column_name = ["words", "english meaning", "chinese meaning", "example"]
         cells = [self.set_table_contents(name) for name in column_name]
@@ -29,7 +42,8 @@ class notion_API():
         result = (dict(create_blocks).get("results"))
         id = (dict(result[0]).get("id"))
         self.tableId = id
-
+        with open('table_Id.txt','w') as f:
+            f.write(self.tableId)
 
     def set_table_contents(self,content):
         cell = [
@@ -72,4 +86,5 @@ class notion_API():
         self.client.blocks.children.append(self.pageId, children=data_array)
 
 
-
+notion = notion_API()
+# notion.get_block_list()
