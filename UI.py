@@ -1,18 +1,23 @@
+import os
+
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 import sys
 
 import pyperclip
 
-from Study_tools_functions import notion, cambridge_search
+from Study_tools_functions import notion, cambridge_search, File_io
 from Study_tools_functions.Snip_window import SnipWidget
-
-
+from UI_File.MatchingGame import MatchingGameWindow
 class MyWindow(QMainWindow):
     def __init__(self, parent=None):
         super(MyWindow, self).__init__()
         self.win_width = 900
         self.win_height = 1000
+        self.file_io = File_io.file_io()
+        self.kaplan_file_path = "vocab_source/GRE_kaplan_book"
+        self.Kaptest_file_path = "vocab_source/Kaptest_Vocab"
+        self.Quizlet_file_path = "vocab_source/Quizlet_Vocab"
         self.setGeometry(50, 50, self.win_width, self.win_height)
         self.setWindowTitle("Snipping Tool for Programmers")
         self.dict_search = cambridge_search.cambridge_search()
@@ -71,20 +76,26 @@ class MyWindow(QMainWindow):
         self.comment.setFixedSize(150, 40)
         self.comment.clicked.connect(self.Question_Vocab_Search_Button_clicked)
 
-        # self.click_and_insert_table = QPushButton(self)
-        # self.click_and_insert_table.setText("Search and insert into table")
-        # self.click_and_insert_table.move(200, 170)
-        # self.click_and_insert_table.setFixedSize(150, 40)
-        # self.click_and_insert_table.clicked.connect(self.insertIntoTable)
-        #
-        # self.searchWordLable = QLabel(self)
-        # self.searchWordLable.move(10, 125)
-        # self.searchWordLable.setText('search Word')
-        # self.searchWordLable.adjustSize()
-        #
-        # self.searchWord = QLineEdit(self)
-        # self.searchWord.move(10, 145)
-        # self.searchWord.setFixedSize(self.win_width - 20, 20)
+        self.click_and_insert_table = QPushButton(self)
+        self.click_and_insert_table.setText("Search and insert into table")
+        self.click_and_insert_table.move(200, 170)
+        self.click_and_insert_table.setFixedSize(150, 40)
+        self.click_and_insert_table.clicked.connect(self.insertIntoTable)
+
+        self.play_matching_game = QPushButton(self)
+        self.play_matching_game.setText("Play matching game")
+        self.play_matching_game.move(390, 170)
+        self.play_matching_game.setFixedSize(150, 40)
+        self.play_matching_game.clicked.connect(self.Matching_Button_Clicked)
+
+        self.searchWordLable = QLabel(self)
+        self.searchWordLable.move(10, 125)
+        self.searchWordLable.setText('search Word')
+        self.searchWordLable.adjustSize()
+
+        self.searchWord = QLineEdit(self)
+        self.searchWord.move(10, 145)
+        self.searchWord.setFixedSize(self.win_width - 20, 20)
 
         self.layout = QHBoxLayout()
         self.notificationBox = QGroupBox("Notification Box", self)
@@ -124,10 +135,15 @@ class MyWindow(QMainWindow):
         self.notificationText.setText("paragraph translation button clicked")
         self.update_notif()
 
+    def Matching_Button_Clicked(self):
+        self.matching_game = MatchingGameWindow()
+        self.matching_game.show()
     def insertIntoTable(self):
         self.Question_Vocab_Search_Button_clicked()
         if(not self.hasChoice):
             self.notion_call.insert_table_row(self.content,"0bc17826-0f8a-4497-bcf5-9923a205b314")
+            self.file_io.writeVocabFile(os.path.join(self.Quizlet_file_path,"Chapter1"),"vocab.txt",self.content[0])
+            self.file_io.writeMeaningFile(os.path.join(self.Quizlet_file_path,"Chapter1"),"meaning.txt",self.content[1] + "\t" + self.content[2])
     def Question_Vocab_Search_Button_clicked(self):
         search_word = self.searchWord.text()
         definition = self.dict_search.search(search_word)
@@ -191,6 +207,9 @@ class MyWindow(QMainWindow):
         pyperclip.copy(self.choice_dict[key].property("defi"))
         self.content = (self.choice_dict[key].property("content"))
         self.notion_call.insert_table_row(self.content, "0bc17826-0f8a-4497-bcf5-9923a205b314")
+        self.file_io.writeVocabFile(os.path.join(self.Quizlet_file_path, "Chapter1"), "vocab.txt", self.content[0])
+        self.file_io.writeMeaningFile(os.path.join(self.Quizlet_file_path, "Chapter1"), "meaning.txt",
+                                      self.content[1] + "\t" + self.content[2])
         for all in self.notificationBox.children():
             all.deleteLater()
         self.initializedNoti()

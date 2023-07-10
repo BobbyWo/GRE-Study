@@ -2,15 +2,14 @@ import os
 import random
 from pprint import pprint
 
-from movable_widget import MyMovableWidget
+from UI_File.movable_widget import MyMovableWidget
 from Study_tools_functions import notion
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
-from PyQt5.QtGui import *
 
 from Study_tools_functions import File_io
 
-class MainWindow(QMainWindow):
+class MatchingGameWindow(QMainWindow):
 
     def __init__(self):
         super().__init__()
@@ -37,7 +36,7 @@ class MainWindow(QMainWindow):
         self.select_chapter = QHBoxLayout()
         self.combo = QComboBox()
         self.combo.addItem("-")
-        self.sourceDir = "../vocab_source"
+        self.sourceDir = "C:\\Users\\02003964\\PycharmProjects\\image_to_string\\vocab_source"
         for source in os.listdir(self.sourceDir):
             self.combo.addItem(source)
         self.combo.activated[str].connect(self.sourceOnChanged)
@@ -222,8 +221,8 @@ class MainWindow(QMainWindow):
                 marks += 1
         print((marks/len(self.Chapter_user_answer_list))*100)
 
-app = QApplication([])
-w = MainWindow()
-w.show()
-
-app.exec_()
+# app = QApplication([])
+# w = MainWindow()
+# w.show()
+#
+# app.exec_()
