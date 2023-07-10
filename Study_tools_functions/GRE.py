@@ -5,10 +5,8 @@ from pynput import keyboard, mouse
 from pynput.mouse import Button, Controller
 import pyscreenshot
 import pyperclip
-import json
 import cambridge_search
-import notion
-from pprint import pprint
+from Study_tools_functions import notion
 
 pressed_location_x = 0
 pressed_location_y = 0
@@ -17,8 +15,8 @@ released_location_y = 0
 
 
 def i_t_s():
-    file = os.listdir("./image")
-    img_name = os.path.join("image", file[0])
+    file = os.listdir("../image")
+    img_name = os.path.join("../image", file[0])
     img = Image.open(img_name)
     s = str(pytesseract.image_to_string(img))
     notion_call.paragraph_content(s, type="heading_3")
@@ -37,7 +35,7 @@ def cap_image_to_string():
         return
     print("a")
     pic = pyscreenshot.grab(bbox=(pressed_location_x, pressed_location_y, released_location_x, released_location_y))
-    pic.save(os.path.join("./image", "test.png"))
+    pic.save(os.path.join("../image", "test.png"))
     i_t_s()
     print("finished")
 
@@ -51,9 +49,9 @@ def translation():
         return
     print("t")
     pic = pyscreenshot.grab(bbox=(pressed_location_x, pressed_location_y, released_location_x, released_location_y))
-    pic.save(os.path.join("./image", "test.png"))
-    file = os.listdir("./image")
-    img_name = os.path.join("image", file[0])
+    pic.save(os.path.join("../image", "test.png"))
+    file = os.listdir("../image")
+    img_name = os.path.join("../image", file[0])
     img = Image.open(img_name)
     s = str(pytesseract.image_to_string(img))
     definition = dict_search.search(str(s).strip())
@@ -78,7 +76,13 @@ def paragraph_translation():
     print("p")
     s = str(pyperclip.paste())
     definition = dict_search.search(str(s).strip())
-    pyperclip.copy(str(definition))
+    defin = definition[0]
+    output_string = ''
+    output_string += defin['words'] + '\t' + f'({defin["pos"]})' + '\n'
+    output_string += 'english_meaning:\n' + defin['english_meaning'] + '\n'
+    output_string += 'chinese_meaning:\n' + defin['chinese_meaning'] + '\n'
+    output_string += 'example:\n' + defin['example'] + '\n'
+    pyperclip.copy(str(output_string))
 
 # mouse monitor
 mouses = Controller()

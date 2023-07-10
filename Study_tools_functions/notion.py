@@ -1,16 +1,19 @@
 import logging
 
-
 from notion_client import Client
 from pprint import pprint
+
+
 class notion_API():
     def __init__(self):
         self.client = Client(auth="secret_PEonGD7yiAodtLiy2LiCVM5qSSv424FnhZ9fzP9DW1v", log_level=logging.DEBUG)
         self.pageId = "d29e6dd696be4cd39443eb4b34269169"
-        with open('table_Id.txt','r') as f:
+        with open('C:\\Users\\02003964\\PycharmProjects\\image_to_string\\Last_table_id.txt', 'r') as f:
             self.tableId = f.readline()
-    def change_page(self,pageId):
+
+    def change_page(self, pageId):
         self.pageId = pageId
+
     def get_block_list(self):
         my_page = self.client.blocks.children.list(self.pageId)
         page_dict = dict()
@@ -21,6 +24,7 @@ class notion_API():
                 if key == 'child_page':
                     page_dict[page[key]['title']] = page['id']
         return page_dict
+
     def create_table(self):
         column_name = ["words", "english meaning", "chinese meaning", "example"]
         cells = [self.set_table_contents(name) for name in column_name]
@@ -42,10 +46,10 @@ class notion_API():
         result = (dict(create_blocks).get("results"))
         id = (dict(result[0]).get("id"))
         self.tableId = id
-        with open('table_Id.txt','w') as f:
+        with open('../table_Id.txt', 'w') as f:
             f.write(self.tableId)
 
-    def set_table_contents(self,content):
+    def set_table_contents(self, content):
         cell = [
             {
                 "type": "text",
@@ -60,16 +64,16 @@ class notion_API():
         ]
         return cell
 
-
-    def insert_table_row(self,contents):
+    def insert_table_row(self, contents, table_ID=""):
+        if(table_ID == ""):
+            table_ID = self.tableId
         cells = [self.set_table_contents(content) for content in contents]
         children = [{"type": "table_row",
                      "table_row": {
                          "cells": cells}}]
-        self.client.blocks.children.append(self.tableId, children=children)
+        self.client.blocks.children.append(table_ID, children=children)
 
-
-    def paragraph_content(self,content, type='paragraph', color="purple"):
+    def paragraph_content(self, content, type='paragraph', color="purple"):
         children = {}
         children['type'] = f'{type}'
         paragraph = {}
