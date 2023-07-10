@@ -133,7 +133,7 @@ class MatchingGameWindow(QMainWindow):
         self.page_answerbox_list = []
         for index,word in enumerate(words_list):
             word_widget = QLabel(word)
-            word_widget.setStyleSheet("border: 1px solid black;")
+            word_widget.setStyleSheet("border: 1px solid black;border-radius: 10px ")
             word_widget.setContentsMargins(25, 5, 25, 5)
             word_widget.setAlignment(Qt.AlignmentFlag.AlignCenter)
             word_widget_list.append(word_widget)

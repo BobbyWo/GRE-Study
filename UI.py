@@ -3,7 +3,7 @@ import os
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 import sys
-
+import qdarkstyle
 import pyperclip
 
 from Study_tools_functions import notion, cambridge_search, File_io
@@ -235,7 +235,7 @@ class MyWindow(QMainWindow):
 
 def window():
     app = QApplication(sys.argv)
-
+    app.setStyleSheet(qdarkstyle.load_stylesheet_pyqt5())
     win = MyWindow()
     win.show()
 
