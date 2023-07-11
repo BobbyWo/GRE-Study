@@ -10,6 +10,7 @@ class MyMovableWidget(QLabel):
     homeAction = None
 
     oldPos = QPoint()
+    embbed_answer_box = -1
     posChanged = pyqtSignal(list)
     def __init__(self,*args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -34,12 +35,22 @@ class MyMovableWidget(QLabel):
         self.oldPos = evt.globalPos()
 
     def mouseReleaseEvent(self,evt):
-        self.posChanged.emit(self.print_self_pos())
+        self.posChanged.emit(self.get_changed_pos())
 
     def showEvent(self, evt):
         self.original_pos = self.pos()
 
     def return_original_pos(self):
         self.move(self.original_pos)
-    def print_self_pos(self):
+    def get_changed_pos(self):
         return [self.pos(),self]
+    def get_pos(self):
+        return self.pos()
+
+    def get_embbed_answer_box(self):
+        return self.embbed_answer_box
+    def embbed_to_answer_box(self,answer_box_index):
+        self.embbed_answer_box = answer_box_index
+
+    def remove_from_answer_box(self):
+        self.embbed_answer_box = -1

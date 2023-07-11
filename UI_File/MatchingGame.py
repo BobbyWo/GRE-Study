@@ -180,7 +180,7 @@ class MatchingGameWindow(QMainWindow):
         next_button = QPushButton("Next")
         next_button.clicked.connect(lambda checked,page_index=page_index:self.nextButtonClicked(page_index))
         button_layout.addWidget(next_button)
-        if(isinstance(self.vocab_dict.__len__()//5, int)):
+        if(isinstance(self.vocab_dict.__len__()/5, int)):
             page_index+= 1
         if( page_index == self.vocab_dict.__len__()//5):
             submit_button = QPushButton("Submit")
@@ -202,10 +202,15 @@ class MatchingGameWindow(QMainWindow):
                 coverage_percentage = overlap_area / box_area
                 if coverage_percentage > 0.5:
                     embedded = True
+                    box_list[1].embbed_to_answer_box(index)
                     self.attach_to_answer_box(box,index,box_list[1])
                     break
         if(not embedded):
+            if box_list[1].get_embbed_answer_box() != -1:
+                self.Chapter_user_answer_list[self.pages_stackWidget.currentIndex() * 5 + box_list[1].get_embbed_answer_box()] = -1
+                box_list[1].remove_from_answer_box()
             box_list[1].return_original_pos()
+
 
     def attach_to_answer_box(self,answer_box,answer_box_index,answer):
         answer.move(answer_box.pos())
@@ -219,7 +224,9 @@ class MatchingGameWindow(QMainWindow):
         for index,answer in enumerate(self.Chapter_answer_list):
             if(answer == self.Chapter_user_answer_list[index]):
                 marks += 1
-        print((marks/len(self.Chapter_user_answer_list))*100)
+        result_marks = (marks/len(self.Chapter_user_answer_list))*100
+        self.file_io.write_file(self.vocab_files,"marks.txt",str(result_marks))
+        self.deleteLater()
 
 # app = QApplication([])
 # w = MainWindow()

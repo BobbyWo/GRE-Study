@@ -18,13 +18,19 @@ class MyWindow(QMainWindow):
         self.kaplan_file_path = "vocab_source/GRE_kaplan_book"
         self.Kaptest_file_path = "vocab_source/Kaptest_Vocab"
         self.Quizlet_file_path = "vocab_source/Quizlet_Vocab"
+        self.kaplan_vocab_table_id = "0bc17826-0f8a-4497-bcf5-9923a205b314"
+        self.new_tofel_vocab_120_table_id = "70a74c01-2fc3-4eec-9420-4f08a37f2f3a"
         self.setGeometry(50, 50, self.win_width, self.win_height)
-        self.setWindowTitle("Snipping Tool for Programmers")
+        self.setWindowTitle("GRE study tools")
         self.dict_search = cambridge_search.cambridge_search()
         self.notion_call = notion.notion_API()
         self.initUI()
 
     def initUI(self):
+        self.searchDirlabel = QLabel(self)
+        self.searchDirlabel.move(10, 10)
+        self.searchDirlabel.setText('Page')
+        self.searchDirlabel.adjustSize()
         self.combo = QComboBox(self)
         pages = self.notion_call.get_block_list()
         self.page = dict(pages)
@@ -32,13 +38,9 @@ class MyWindow(QMainWindow):
             self.combo.addItem(key)
         self.combo.move(10, 30)
         self.combo.setFixedSize(self.win_width - 20, 20)
-
         self.combo.activated[str].connect(self.onChanged)
 
-        self.searchDirlabel = QLabel(self)
-        self.searchDirlabel.move(10, 10)
-        self.searchDirlabel.setText('Page')
-        self.searchDirlabel.adjustSize()
+
 
         # Define buttons
         x = 1
@@ -70,6 +72,16 @@ class MyWindow(QMainWindow):
         self.paraTrans.clicked.connect(self.ParagraphTranslation_Button_clicked)
         x += 1
 
+        self.searchWordLable = QLabel(self)
+        self.searchWordLable.move(10, 125)
+        self.searchWordLable.setText('search Word')
+        self.searchWordLable.adjustSize()
+        self.page
+
+        self.searchWord = QLineEdit(self)
+        self.searchWord.move(10, 145)
+        self.searchWord.setFixedSize(self.win_width - 20, 20)
+
         self.comment = QPushButton(self)
         self.comment.setText("Question Vocab Search")
         self.comment.move(10, 170)
@@ -87,15 +99,6 @@ class MyWindow(QMainWindow):
         self.play_matching_game.move(390, 170)
         self.play_matching_game.setFixedSize(150, 40)
         self.play_matching_game.clicked.connect(self.Matching_Button_Clicked)
-
-        self.searchWordLable = QLabel(self)
-        self.searchWordLable.move(10, 125)
-        self.searchWordLable.setText('search Word')
-        self.searchWordLable.adjustSize()
-
-        self.searchWord = QLineEdit(self)
-        self.searchWord.move(10, 145)
-        self.searchWord.setFixedSize(self.win_width - 20, 20)
 
         self.layout = QHBoxLayout()
         self.notificationBox = QGroupBox("Notification Box", self)
@@ -141,7 +144,7 @@ class MyWindow(QMainWindow):
     def insertIntoTable(self):
         self.Question_Vocab_Search_Button_clicked()
         if(not self.hasChoice):
-            self.notion_call.insert_table_row(self.content,"0bc17826-0f8a-4497-bcf5-9923a205b314")
+            self.notion_call.insert_table_row(self.content,self.new_tofel_vocab_120_table_id)
             self.file_io.writeVocabFile(os.path.join(self.Quizlet_file_path,"Chapter1"),"vocab.txt",self.content[0])
             self.file_io.writeMeaningFile(os.path.join(self.Quizlet_file_path,"Chapter1"),"meaning.txt",self.content[1] + "\t" + self.content[2])
     def Question_Vocab_Search_Button_clicked(self):
@@ -206,7 +209,7 @@ class MyWindow(QMainWindow):
     def choiceButtonClicked(self, key):
         pyperclip.copy(self.choice_dict[key].property("defi"))
         self.content = (self.choice_dict[key].property("content"))
-        self.notion_call.insert_table_row(self.content, "0bc17826-0f8a-4497-bcf5-9923a205b314")
+        self.notion_call.insert_table_row(self.content, self.new_tofel_vocab_120_table_id)
         self.file_io.writeVocabFile(os.path.join(self.Quizlet_file_path, "Chapter1"), "vocab.txt", self.content[0])
         self.file_io.writeMeaningFile(os.path.join(self.Quizlet_file_path, "Chapter1"), "meaning.txt",
                                       self.content[1] + "\t" + self.content[2])

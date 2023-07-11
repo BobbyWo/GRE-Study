@@ -72,3 +72,14 @@ class file_io():
         with open(file_path, 'a', encoding="utf-8") as f:
             f.writelines(content+ "\n")
             f.close()
+
+    def write_file(self,file_path,file_name,content):
+        file_path = os.path.join(file_path, file_name)
+        file_exists = os.path.exists(file_path)
+        if (not file_exists):
+            with open(file_path, 'w', encoding="utf-8") as f:
+                f.write(content + "\n")
+                f.close()
+        with open(file_path, 'a', encoding="utf-8") as f:
+            f.writelines(content + "\n")
+            f.close()
