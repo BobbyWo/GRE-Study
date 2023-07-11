@@ -1,3 +1,6 @@
+import os.path
+import sys
+
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 
@@ -6,7 +9,7 @@ class cambridge_search():
     def __init__(self):
         op = webdriver.ChromeOptions()
         op.add_argument('headless')
-        driver = webdriver.Chrome("selenium_driver/chromedriver.exe")
+        driver = self.get_driver()
         self.driver = driver
         self.url = "https://dictionary.cambridge.org/dictionary/english-chinese-traditional/"
         self.driver.get(self.url)
@@ -44,3 +47,11 @@ class cambridge_search():
                 defin_dict = {}
                 word_dict_search = ""
         return list_defin
+
+    def get_driver(self):
+        if getattr(sys,'frozen',False):
+            chromedriver_path = os.path.join(sys._MEIPASS,"chromedriver.exe")
+            driver = webdriver.Chrome(chromedriver_path)
+        else:
+            driver = webdriver.Chrome("C:\\Users\\02003964\\PycharmProjects\\image_to_string\\selenium_driver\\chromedriver.exe")
+        return driver
