@@ -5,6 +5,8 @@ target/
 !**/src/test/**/target/
 venv/
 *.log
+.ipynb_checkpoints/
+
 ### STS ###
 .apt_generated
 .classpath

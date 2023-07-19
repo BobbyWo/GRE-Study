@@ -6,7 +6,7 @@ from UI_File.movable_widget import MyMovableWidget
 from Study_tools_functions import notion
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
-
+import math
 from Study_tools_functions import File_io
 
 class MatchingGameWindow(QMainWindow):
@@ -36,7 +36,7 @@ class MatchingGameWindow(QMainWindow):
         self.select_chapter = QHBoxLayout()
         self.combo = QComboBox()
         self.combo.addItem("-")
-        self.sourceDir = "C:\\Users\\02003964\\PycharmProjects\\image_to_string\\vocab_source"
+        self.sourceDir = "C:\\Users\\User\\Documents\\image_to_string\\vocab_source"
         for source in os.listdir(self.sourceDir):
             self.combo.addItem(source)
         self.combo.activated[str].connect(self.sourceOnChanged)
@@ -63,6 +63,7 @@ class MatchingGameWindow(QMainWindow):
         for index, word in enumerate(word_list):
             self.vocab_dict[word] = meaning_list[index]
 
+        print(len(word_list))
         shuffled_words = random.sample(word_list, len(word_list))
         page_index = 0
         self.Chapter_answer_list = []
@@ -180,9 +181,13 @@ class MatchingGameWindow(QMainWindow):
         next_button = QPushButton("Next")
         next_button.clicked.connect(lambda checked,page_index=page_index:self.nextButtonClicked(page_index))
         button_layout.addWidget(next_button)
-        if(isinstance(self.vocab_dict.__len__()/5, int)):
-            page_index+= 1
-        if( page_index == self.vocab_dict.__len__()//5):
+        # print(self.vocab_dict.__len__()/5)
+        # print(round(self.vocab_dict.__len__()/5))
+        # print(page_index)
+        # if(isinstance(self.vocab_dict.__len__()/5, int)):
+        print(self.vocab_dict.__len__())
+        page_index+= 1
+        if( page_index == math.ceil(self.vocab_dict.__len__()/5)):
             submit_button = QPushButton("Submit")
             submit_button.clicked.connect(self.submitButtonClicked)
             button_layout.addWidget(submit_button)
@@ -219,6 +224,7 @@ class MatchingGameWindow(QMainWindow):
         self.pages_stackWidget.setCurrentIndex(page_index - 1)
     def nextButtonClicked(self, page_index):
         self.pages_stackWidget.setCurrentIndex(page_index + 1)
+        print(page_index + 1)
     def submitButtonClicked(self):
         marks = 0
         for index,answer in enumerate(self.Chapter_answer_list):
@@ -226,6 +232,8 @@ class MatchingGameWindow(QMainWindow):
                 marks += 1
         result_marks = (marks/len(self.Chapter_user_answer_list))*100
         self.file_io.write_file(self.vocab_files,"marks.txt",str(result_marks))
+        print(self.Chapter_answer_list)
+        print(self.Chapter_user_answer_list)
         self.deleteLater()
 
 # app = QApplication([])

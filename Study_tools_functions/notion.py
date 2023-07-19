@@ -8,7 +8,7 @@ class notion_API():
     def __init__(self):
         self.client = Client(auth="secret_PEonGD7yiAodtLiy2LiCVM5qSSv424FnhZ9fzP9DW1v", log_level=logging.DEBUG)
         self.pageId = "d29e6dd696be4cd39443eb4b34269169"
-        with open('C:\\Users\\02003964\\PycharmProjects\\image_to_string\\Last_table_id.txt', 'r') as f:
+        with open('C:\\Users\\User\\Documents\\image_to_string\\Last_table_id.txt', 'r') as f:
             self.tableId = f.readline()
 
     def change_page(self, pageId):

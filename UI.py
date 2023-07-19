@@ -18,12 +18,13 @@ class MyWindow(QMainWindow):
         self.kaplan_file_path = "vocab_source/GRE_kaplan_book"
         self.Kaptest_file_path = "vocab_source/Kaptest_Vocab"
         self.Quizlet_file_path = "vocab_source/Quizlet_Vocab"
+        self.TOFEL_file_path = "vocab_source/TOFEL_book_Vocab"
         self.kaplan_vocab_table_id = "0bc17826-0f8a-4497-bcf5-9923a205b314"
         self.new_tofel_vocab_120_table_id = "70a74c01-2fc3-4eec-9420-4f08a37f2f3a"
         self.setGeometry(50, 50, self.win_width, self.win_height)
         self.setWindowTitle("GRE study tools")
         self.dict_search = cambridge_search.cambridge_search()
-        self.notion_call = notion.notion_API()
+        # self.notion_call = notion.notion_API()
         self.initUI()
 
     def initUI(self):
@@ -31,14 +32,14 @@ class MyWindow(QMainWindow):
         self.searchDirlabel.move(10, 10)
         self.searchDirlabel.setText('Page')
         self.searchDirlabel.adjustSize()
-        self.combo = QComboBox(self)
-        pages = self.notion_call.get_block_list()
-        self.page = dict(pages)
-        for key in self.page.keys():
-            self.combo.addItem(key)
-        self.combo.move(10, 30)
-        self.combo.setFixedSize(self.win_width - 20, 20)
-        self.combo.activated[str].connect(self.onChanged)
+        # self.combo = QComboBox(self)
+        # pages = self.notion_call.get_block_list()
+        # self.page = dict(pages)
+        # for key in self.page.keys():
+        #     self.combo.addItem(key)
+        # self.combo.move(10, 30)
+        # self.combo.setFixedSize(self.win_width - 20, 20)
+        # self.combo.activated[str].connect(self.onChanged)
 
 
 
@@ -76,7 +77,7 @@ class MyWindow(QMainWindow):
         self.searchWordLable.move(10, 125)
         self.searchWordLable.setText('search Word')
         self.searchWordLable.adjustSize()
-        self.page
+        # self.page
 
         self.searchWord = QLineEdit(self)
         self.searchWord.move(10, 145)
@@ -129,7 +130,8 @@ class MyWindow(QMainWindow):
         self.update_notif()
 
     def CreateTable_Button_clicked(self):
-        self.notion_call.create_table()
+        pass
+        # self.notion_call.create_table()
 
     def ParagraphTranslation_Button_clicked(self):
         self.snipWin = SnipWidget("paraTrans", self)
@@ -144,9 +146,9 @@ class MyWindow(QMainWindow):
     def insertIntoTable(self):
         self.Question_Vocab_Search_Button_clicked()
         if(not self.hasChoice):
-            self.notion_call.insert_table_row(self.content,self.kaplan_vocab_table_id)
-            self.file_io.writeVocabFile(os.path.join(self.Quizlet_file_path,"Chapter2"),"vocab.txt",self.content[0])
-            self.file_io.writeMeaningFile(os.path.join(self.Quizlet_file_path,"Chapter2"),"meaning.txt",self.content[1] + "\t" + self.content[2])
+            # self.notion_call.insert_table_row(self.content,self.kaplan_vocab_table_id)
+            self.file_io.writeVocabFile(os.path.join(self.TOFEL_file_path,"Chapter1"),"vocab.txt",self.content[0])
+            self.file_io.writeMeaningFile(os.path.join(self.TOFEL_file_path,"Chapter1"),"meaning.txt",self.content[1] + "\t" + self.content[2])
     def Question_Vocab_Search_Button_clicked(self):
         search_word = self.searchWord.text()
         definition = self.dict_search.search(search_word)
@@ -209,9 +211,9 @@ class MyWindow(QMainWindow):
     def choiceButtonClicked(self, key):
         pyperclip.copy(self.choice_dict[key].property("defi"))
         self.content = (self.choice_dict[key].property("content"))
-        self.notion_call.insert_table_row(self.content, self.kaplan_vocab_table_id)
-        self.file_io.writeVocabFile(os.path.join(self.Quizlet_file_path, "Chapter2"), "vocab.txt", self.content[0])
-        self.file_io.writeMeaningFile(os.path.join(self.Quizlet_file_path, "Chapter2"), "meaning.txt",
+        # self.notion_call.insert_table_row(self.content, self.kaplan_vocab_table_id)
+        self.file_io.writeVocabFile(os.path.join(self.TOFEL_file_path, "Chapter1"), "vocab.txt", self.content[0])
+        self.file_io.writeMeaningFile(os.path.join(self.TOFEL_file_path, "Chapter1"), "meaning.txt",
                                       self.content[1] + "\t" + self.content[2])
         for all in self.notificationBox.children():
             all.deleteLater()
@@ -220,7 +222,7 @@ class MyWindow(QMainWindow):
     def onChanged(self, text):
         temp_text = f'Page changed to {text}. \n'
         self.notificationText.setText(temp_text)
-        self.notion_call.change_page(self.page[text])
+        # self.notion_call.change_page(self.page[text])
 
     def reset_notif_text(self):
         self.notificationText.setText("Idle...")
