@@ -36,7 +36,7 @@ class MatchingGameWindow(QMainWindow):
         self.select_chapter = QHBoxLayout()
         self.combo = QComboBox()
         self.combo.addItem("-")
-        self.sourceDir = "C:\\Users\\User\\Documents\\image_to_string\\vocab_source"
+        self.sourceDir = "C:\\Users\\02003964\\PycharmProjects\\image_to_string\\vocab_source"
         for source in os.listdir(self.sourceDir):
             self.combo.addItem(source)
         self.combo.activated[str].connect(self.sourceOnChanged)
@@ -135,7 +135,7 @@ class MatchingGameWindow(QMainWindow):
         for index,word in enumerate(words_list):
             word_widget = QLabel(word)
             word_widget.setStyleSheet("border: 1px solid black;border-radius: 10px ")
-            word_widget.setContentsMargins(25, 5, 25, 5)
+            word_widget.setContentsMargins(15, 5, 15, 5)
             word_widget.setAlignment(Qt.AlignmentFlag.AlignCenter)
             word_widget_list.append(word_widget)
             answer_box = QLabel()

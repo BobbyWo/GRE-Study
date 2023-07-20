@@ -146,12 +146,14 @@ class MyWindow(QMainWindow):
     def insertIntoTable(self):
         self.Question_Vocab_Search_Button_clicked()
         if(not self.hasChoice):
-            # self.notion_call.insert_table_row(self.content,self.kaplan_vocab_table_id)
-            self.file_io.writeVocabFile(os.path.join(self.TOFEL_file_path,"Chapter1"),"vocab.txt",self.content[0])
-            self.file_io.writeMeaningFile(os.path.join(self.TOFEL_file_path,"Chapter1"),"meaning.txt",self.content[1] + "\t" + self.content[2])
+            pass
+            # self.notion_call.insert_table_row(self.content)
+            # self.file_io.writeVocabFile(os.path.join(self.TOFEL_file_path,"Chapter1"),"vocab.txt",self.content[0])
+            # self.file_io.writeMeaningFile(os.path.join(self.TOFEL_file_path,"Chapter1"),"meaning.txt",self.content[1] + "\t" + self.content[2])
     def Question_Vocab_Search_Button_clicked(self):
         search_word = self.searchWord.text()
-        definition = self.dict_search.search(search_word)
+        # definition = self.dict_search.search(search_word)
+        definition = self.dict_search.Enhance_search(search_word)
         if len(definition) == 0:
             content = [search_word, "", "", ""]
         output_str = ''
@@ -211,10 +213,10 @@ class MyWindow(QMainWindow):
     def choiceButtonClicked(self, key):
         pyperclip.copy(self.choice_dict[key].property("defi"))
         self.content = (self.choice_dict[key].property("content"))
-        # self.notion_call.insert_table_row(self.content, self.kaplan_vocab_table_id)
-        self.file_io.writeVocabFile(os.path.join(self.TOFEL_file_path, "Chapter1"), "vocab.txt", self.content[0])
-        self.file_io.writeMeaningFile(os.path.join(self.TOFEL_file_path, "Chapter1"), "meaning.txt",
-                                      self.content[1] + "\t" + self.content[2])
+        # self.notion_call.insert_table_row(self.content)
+        # self.file_io.writeVocabFile(os.path.join(self.TOFEL_file_path, "Chapter1"), "vocab.txt", self.content[0])
+        # self.file_io.writeMeaningFile(os.path.join(self.TOFEL_file_path, "Chapter1"), "meaning.txt",
+        #                               self.content[1] + "\t" + self.content[2])
         for all in self.notificationBox.children():
             all.deleteLater()
         self.initializedNoti()
