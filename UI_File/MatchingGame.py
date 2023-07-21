@@ -4,6 +4,7 @@ from pprint import pprint
 
 from UI_File.movable_widget import MyMovableWidget
 from Study_tools_functions import notion
+from UI_File.result_widget import Ui_MainWindow
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 import math
@@ -57,17 +58,15 @@ class MatchingGameWindow(QMainWindow):
             if (vocab_file.__contains__("meaning")):
                 meaning_file_path = os.path.join(self.vocab_files, vocab_file)
         if (word_file_path):
-            word_list = self.file_io.readVocabFile(word_file_path)
+            self.word_list = self.file_io.readVocabFile(word_file_path)
         if (meaning_file_path):
-            meaning_list = self.file_io.readMeaningfile(meaning_file_path)
-        for index, word in enumerate(word_list):
-            self.vocab_dict[word] = meaning_list[index]
-
-        print(len(word_list))
-        shuffled_words = random.sample(word_list, len(word_list))
+            self.meaning_list = self.file_io.readMeaningfile(meaning_file_path)
+        for index, word in enumerate(self.word_list):
+            self.vocab_dict[word] = self.meaning_list[index]
+        shuffled_words = random.sample(self.word_list, len(self.word_list))
         page_index = 0
         self.Chapter_answer_list = []
-        self.Chapter_user_answer_list = [-1] * len(word_list)
+        self.Chapter_user_answer_list = [-1] * len(self.word_list)
         self.Chapter_answer_box_list = []
         while(len(shuffled_words)>0):
             if(len(shuffled_words) >= 5):
@@ -76,9 +75,9 @@ class MatchingGameWindow(QMainWindow):
                 random_words = shuffled_words[0:len(shuffled_words)]
             index_list = []
             for word in random_words:
-                index_list.append(word_list.index(word))
+                index_list.append(self.word_list.index(word))
                 shuffled_words.remove(word)
-            page_container = self.setup_vocab(random_words,meaning_list,index_list,page_index)
+            page_container = self.setup_vocab(random_words,self.meaning_list,index_list,page_index)
             self.pages_stackWidget.addWidget(page_container)
             page_index += 1
             self.Chapter_answer_list.extend(index_list)
@@ -181,13 +180,8 @@ class MatchingGameWindow(QMainWindow):
         next_button = QPushButton("Next")
         next_button.clicked.connect(lambda checked,page_index=page_index:self.nextButtonClicked(page_index))
         button_layout.addWidget(next_button)
-        # print(self.vocab_dict.__len__()/5)
-        # print(round(self.vocab_dict.__len__()/5))
-        # print(page_index)
-        # if(isinstance(self.vocab_dict.__len__()/5, int)):
-        print(self.vocab_dict.__len__())
         page_index+= 1
-        if( page_index == math.ceil(self.vocab_dict.__len__()/5)):
+        if( page_index == math.ceil(len(self.word_list)/5)):
             submit_button = QPushButton("Submit")
             submit_button.clicked.connect(self.submitButtonClicked)
             button_layout.addWidget(submit_button)
@@ -224,20 +218,34 @@ class MatchingGameWindow(QMainWindow):
         self.pages_stackWidget.setCurrentIndex(page_index - 1)
     def nextButtonClicked(self, page_index):
         self.pages_stackWidget.setCurrentIndex(page_index + 1)
-        print(page_index + 1)
     def submitButtonClicked(self):
+
         marks = 0
+        words, wrongAns_List, correctAns_List,answer_correct = [],[],[],[]
         for index,answer in enumerate(self.Chapter_answer_list):
             if(answer == self.Chapter_user_answer_list[index]):
                 marks += 1
+                answer_correct.append(True)
+            else:
+                answer_correct.append(False)
+                words.append(self.word_list[answer])
+                correctAns_List.append(self.meaning_list[answer])
+                if self.Chapter_user_answer_list[index] != -1:
+                    wrongAns_List.append(self.meaning_list[self.Chapter_user_answer_list[index]])
+                else:
+                    wrongAns_List.append("you did not answered this question!!!!!!!!")
         result_marks = (marks/len(self.Chapter_user_answer_list))*100
-        self.file_io.write_file(self.vocab_files,"marks.txt",str(result_marks))
+        self.result_window = Ui_MainWindow(result_marks, words, wrongAns_List, correctAns_List,answer_correct)
+        self.result_window.show()
+        # self.file_io.write_file(self.vocab_files,"marks.txt",str(result_marks))
         print(self.Chapter_answer_list)
         print(self.Chapter_user_answer_list)
+
         self.deleteLater()
 
-# app = QApplication([])
-# w = MainWindow()
-# w.show()
 #
-# app.exec_()
+app = QApplication([])
+w = MatchingGameWindow()
+w.show()
+
+app.exec_()
