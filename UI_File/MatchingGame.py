@@ -36,7 +36,7 @@ class MatchingGameWindow(QMainWindow):
         self.select_chapter = QHBoxLayout()
         self.combo = QComboBox()
         self.combo.addItem("-")
-        self.sourceDir = "C:\\Users\\02003964\\PycharmProjects\\image_to_string\\vocab_source"
+        self.sourceDir = "vocab_source"
         for source in os.listdir(self.sourceDir):
             self.combo.addItem(source)
         self.combo.activated[str].connect(self.sourceOnChanged)
