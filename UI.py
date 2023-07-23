@@ -148,8 +148,8 @@ class MyWindow(QMainWindow):
         if(not self.hasChoice):
             pass
             self.notion_call.insert_table_row(self.content)
-            self.file_io.writeVocabFile(os.path.join(self.TOFEL_file_path,"Chapter2"),"vocab.txt",self.content[0])
-            self.file_io.writeMeaningFile(os.path.join(self.TOFEL_file_path,"Chapter2"),"meaning.txt",self.content[1] + "\t" + self.content[2])
+            self.file_io.writeVocabFile(os.path.join(self.TOFEL_file_path,"Chapter3"),"vocab.txt",self.content[0])
+            self.file_io.writeMeaningFile(os.path.join(self.TOFEL_file_path,"Chapter3"),"meaning.txt",self.content[1] + "\t" + self.content[2])
     def Question_Vocab_Search_Button_clicked(self):
         search_word = self.searchWord.text()
         # definition = self.dict_search.search(search_word)
@@ -214,8 +214,8 @@ class MyWindow(QMainWindow):
         pyperclip.copy(self.choice_dict[key].property("defi"))
         self.content = (self.choice_dict[key].property("content"))
         self.notion_call.insert_table_row(self.content)
-        self.file_io.writeVocabFile(os.path.join(self.TOFEL_file_path, "Chapter2"), "vocab.txt", self.content[0])
-        self.file_io.writeMeaningFile(os.path.join(self.TOFEL_file_path, "Chapter2"), "meaning.txt",
+        self.file_io.writeVocabFile(os.path.join(self.TOFEL_file_path, "Chapter3"), "vocab.txt", self.content[0])
+        self.file_io.writeMeaningFile(os.path.join(self.TOFEL_file_path, "Chapter3"), "meaning.txt",
                                       self.content[1] + "\t" + self.content[2])
         for all in self.notificationBox.children():
             all.deleteLater()
