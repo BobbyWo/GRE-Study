@@ -6,7 +6,7 @@ target/
 venv/
 *.log
 .ipynb_checkpoints/
-
+config.json
 ### STS ###
 .apt_generated
 .classpath
