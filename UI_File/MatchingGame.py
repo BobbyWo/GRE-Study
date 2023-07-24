@@ -244,8 +244,8 @@ class MatchingGameWindow(QMainWindow):
         self.deleteLater()
 
 #
-app = QApplication([])
-w = MatchingGameWindow()
-w.show()
-
-app.exec_()
+# app = QApplication([])
+# w = MatchingGameWindow()
+# w.show()
+#
+# app.exec_()

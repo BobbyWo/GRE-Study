@@ -63,7 +63,10 @@ class Ui_MainWindow(QMainWindow):
 
     def setup_marks_label(self):
         self.label = QtWidgets.QLabel(self.centralwidget)
-        self.label.setGeometry(QtCore.QRect(165, 20, 500, 130))
+        if(self.marks == 100.0):
+            self.label.setGeometry(QtCore.QRect(165, 200, 500, 130))
+        else:
+            self.label.setGeometry(QtCore.QRect(165, 20, 500, 130))
         font = QtGui.QFont()
         font.setFamily("STCaiyun")
         font.setPointSize(20)
@@ -77,7 +80,7 @@ class Ui_MainWindow(QMainWindow):
             marks_messages += f"You have answered {str(len(self.wrongAns_List))} wrong!!!" + "\n"
             marks_messages += f"The wrong Answer and right answer shown below"
         else:
-            marks_messages += "Congratulations!!!!!!!!!!!!! \n You got it All right"
+            marks_messages += "Congratulations!!!!!!!!!!!!! \n You got it All right!!!!!!!!"
         self.label.setText(marks_messages)
     def setup_again_label(self):
         self.label_2 = QtWidgets.QLabel(self.centralwidget)
@@ -104,7 +107,6 @@ class Ui_MainWindow(QMainWindow):
         count = 0
         page_layout = QVBoxLayout()
         page_index = 0
-        print(self.words)
         for (word,wrongAns,correctAns,ans_cor) in zip(self.words,self.wrongAns_List,self.correctAns_List,self.answer_correct):
             #setting layout for every wrong answer
             seperated_words_layout = QHBoxLayout()
