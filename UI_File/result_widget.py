@@ -121,6 +121,7 @@ class Ui_MainWindow(QMainWindow):
             font.setPointSize(14)
             self.buttonBox.setFont(font)
             self.buttonBox.setStandardButtons(QtWidgets.QDialogButtonBox.No | QtWidgets.QDialogButtonBox.Yes)
+            self.buttonBox
             self.buttonBox.setObjectName("buttonBox")
 
     def setup_marks_label(self):

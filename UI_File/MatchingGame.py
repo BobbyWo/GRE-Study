@@ -1,3 +1,4 @@
+import json
 import os
 import random
 from pprint import pprint
@@ -37,7 +38,9 @@ class MatchingGameWindow(QMainWindow):
         self.select_chapter = QHBoxLayout()
         self.combo = QComboBox()
         self.combo.addItem("-")
-        self.sourceDir = "C:\\Users\\02003964\\PycharmProjects\\image_to_string\\vocab_source"
+        f = open(os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__file__))), "config.json"))
+        data = json.load(f)
+        self.sourceDir = data["vocab_source_path"]
         for source in os.listdir(self.sourceDir):
             self.combo.addItem(source)
         self.combo.activated[str].connect(self.sourceOnChanged)

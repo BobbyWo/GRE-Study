@@ -1,3 +1,4 @@
+import json
 import os.path
 import sys
 from pprint import pprint
@@ -108,5 +109,8 @@ class cambridge_search():
             chromedriver_path = os.path.join(sys._MEIPASS,"chromedriver.exe")
             driver = webdriver.Chrome(chromedriver_path)
         else:
-            driver = webdriver.Chrome("C:\\Users\\02003964\\PycharmProjects\\image_to_string\\selenium_driver\\chromedriver.exe")
+            f = open(os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__file__))), "config.json"))
+            data = json.load(f)
+            chrome_driver_path = data["chrome_driver_path"]
+            driver = webdriver.Chrome(chrome_driver_path)
         return driver

@@ -1,0 +1,6 @@
+{
+  "Notion_call_enabled" : "N",
+  "vocab_source_path" : "C:\\Users\\02003964\\PycharmProjects\\image_to_string\\vocab_source",
+  "chrome_driver_path" : "C:\\Users\\02003964\\PycharmProjects\\image_to_string\\selenium_driver\\chromedriver.exe",
+  "table_id_file_path" : "C:\\Users\\02003964\\PycharmProjects\\image_to_string\\Last_table_id.txt"
+}

@@ -1,3 +1,4 @@
+import json
 import os
 
 from PyQt5.QtGui import *
@@ -21,10 +22,14 @@ class MyWindow(QMainWindow):
         self.TOFEL_file_path = "vocab_source/TOFEL_book_Vocab"
         self.kaplan_vocab_table_id = "0bc17826-0f8a-4497-bcf5-9923a205b314"
         self.new_tofel_vocab_120_table_id = "70a74c01-2fc3-4eec-9420-4f08a37f2f3a"
+        f = open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "config.json"))
+        data = json.load(f)
+        self.Notion_call_enabled = data["Notion_call_enabled"] == 'Y'
         self.setGeometry(50, 50, self.win_width, self.win_height)
         self.setWindowTitle("GRE study tools")
         self.dict_search = cambridge_search.cambridge_search()
-        # self.notion_call = notion.notion_API()
+        if self.Notion_call_enabled:
+            self.notion_call = notion.notion_API()
         self.initUI()
 
     def initUI(self):
@@ -32,14 +37,15 @@ class MyWindow(QMainWindow):
         self.searchDirlabel.move(10, 10)
         self.searchDirlabel.setText('Page')
         self.searchDirlabel.adjustSize()
-        # self.combo = QComboBox(self)
-        # pages = self.notion_call.get_block_list()
-        # self.page = dict(pages)
-        # for key in self.page.keys():
-        #     self.combo.addItem(key)
-        # self.combo.move(10, 30)
-        # self.combo.setFixedSize(self.win_width - 20, 20)
-        # self.combo.activated[str].connect(self.onChanged)
+        if self.Notion_call_enabled:
+            self.combo = QComboBox(self)
+            pages = self.notion_call.get_block_list()
+            self.page = dict(pages)
+            for key in self.page.keys():
+                self.combo.addItem(key)
+            self.combo.move(10, 30)
+            self.combo.setFixedSize(self.win_width - 20, 20)
+            self.combo.activated[str].connect(self.onChanged)
 
 
 
@@ -130,8 +136,8 @@ class MyWindow(QMainWindow):
         self.update_notif()
 
     def CreateTable_Button_clicked(self):
-        pass
-        # self.notion_call.create_table()
+        if self.Notion_call_enabled:
+            self.notion_call.create_table()
 
     def ParagraphTranslation_Button_clicked(self):
         self.snipWin = SnipWidget("paraTrans", self)
@@ -146,8 +152,8 @@ class MyWindow(QMainWindow):
     def insertIntoTable(self):
         self.Question_Vocab_Search_Button_clicked()
         if(not self.hasChoice):
-            pass
-            # self.notion_call.insert_table_row(self.content)
+            if self.Notion_call_enabled:
+                self.notion_call.insert_table_row(self.content)
             # self.file_io.writeVocabFile(os.path.join(self.TOFEL_file_path,"Chapter1"),"vocab.txt",self.content[0])
             # self.file_io.writeMeaningFile(os.path.join(self.TOFEL_file_path,"Chapter1"),"meaning.txt",self.content[1] + "\t" + self.content[2])
     def Question_Vocab_Search_Button_clicked(self):
@@ -213,7 +219,8 @@ class MyWindow(QMainWindow):
     def choiceButtonClicked(self, key):
         pyperclip.copy(self.choice_dict[key].property("defi"))
         self.content = (self.choice_dict[key].property("content"))
-        # self.notion_call.insert_table_row(self.content)
+        if self.Notion_call_enabled:
+            self.notion_call.insert_table_row(self.content)
         # self.file_io.writeVocabFile(os.path.join(self.TOFEL_file_path, "Chapter1"), "vocab.txt", self.content[0])
         # self.file_io.writeMeaningFile(os.path.join(self.TOFEL_file_path, "Chapter1"), "meaning.txt",
         #                               self.content[1] + "\t" + self.content[2])
@@ -224,7 +231,8 @@ class MyWindow(QMainWindow):
     def onChanged(self, text):
         temp_text = f'Page changed to {text}. \n'
         self.notificationText.setText(temp_text)
-        # self.notion_call.change_page(self.page[text])
+        if self.Notion_call_enabled:
+            self.notion_call.change_page(self.page[text])
 
     def reset_notif_text(self):
         self.notificationText.setText("Idle...")

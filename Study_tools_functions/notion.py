@@ -1,14 +1,18 @@
+import json
 import logging
 
 from notion_client import Client
 from pprint import pprint
-
+import os
 
 class notion_API():
     def __init__(self):
         self.client = Client(auth="secret_PEonGD7yiAodtLiy2LiCVM5qSSv424FnhZ9fzP9DW1v", log_level=logging.DEBUG)
         self.pageId = "d29e6dd696be4cd39443eb4b34269169"
-        with open('C:\\Users\\02003964\\PycharmProjects\\image_to_string\\Last_table_id.txt', 'r') as f:
+        f = open(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "config.json"))
+        data = json.load(f)
+        self.table_id_file_path = data["table_id_file_path"]
+        with open(self.table_id_file_path, 'r') as f:
             self.tableId = f.readline()
 
     def change_page(self, pageId):
@@ -46,7 +50,7 @@ class notion_API():
         result = (dict(create_blocks).get("results"))
         id = (dict(result[0]).get("id"))
         self.tableId = id
-        with open('C:\\Users\\02003964\\PycharmProjects\\image_to_string\\Last_table_id.txt', 'w') as f:
+        with open(self.table_id_file_path, 'w') as f:
             f.write(self.tableId)
 
     def set_table_contents(self, content):
