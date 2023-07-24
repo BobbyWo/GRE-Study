@@ -228,12 +228,12 @@ class MatchingGameWindow(QMainWindow):
                 answer_correct.append(True)
             else:
                 answer_correct.append(False)
-                words.append(self.word_list[answer])
-                correctAns_List.append(self.meaning_list[answer])
-                if self.Chapter_user_answer_list[index] != -1:
-                    wrongAns_List.append(self.meaning_list[self.Chapter_user_answer_list[index]])
-                else:
-                    wrongAns_List.append("you did not answered this question!!!!!!!!")
+            words.append(self.word_list[answer])
+            correctAns_List.append(self.meaning_list[answer])
+            if self.Chapter_user_answer_list[index] != -1:
+                wrongAns_List.append(self.meaning_list[self.Chapter_user_answer_list[index]])
+            else:
+                wrongAns_List.append("you did not answered this question!!!!!!!!")
         result_marks = (marks/len(self.Chapter_user_answer_list))*100
         self.result_window = Ui_MainWindow(result_marks, words, wrongAns_List, correctAns_List,answer_correct)
         self.result_window.show()

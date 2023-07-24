@@ -16,14 +16,14 @@ from PyQt5.QtWidgets import *
 
 class Ui_MainWindow(QMainWindow):
 
-    def __init__(self,marks,words,wrongAns_List,correctAns_List,answer_correct):
+    def __init__(self,marks,words,UserAns_List,correctAns_List,answer_correct):
         super().__init__()
         self.marks = marks
         self.words = words
-        self.wrongAns_List = wrongAns_List
+        self.UserAns_List = UserAns_List
         self.correctAns_List = correctAns_List
         self.answer_correct = answer_correct
-        self.setFixedSize(800, 600)
+        self.setFixedSize(800, 800)
         self.setupUi()
     def setupUi(self):
 
@@ -31,7 +31,7 @@ class Ui_MainWindow(QMainWindow):
         self.centralwidget.setObjectName("centralwidget")
 
         self.verticalLayoutWidget = QtWidgets.QWidget(self.centralwidget)
-        self.verticalLayoutWidget.setGeometry(QtCore.QRect(60, 110, 661, 351))
+        self.verticalLayoutWidget.setGeometry(QtCore.QRect(60, 200, 661, 500))
         self.verticalLayoutWidget.setObjectName("verticalLayoutWidget")
         self.stackAnswer =  QtWidgets.QStackedWidget(self.verticalLayoutWidget)
         self.stackAnswer.setContentsMargins(0, 0, 0, 0)
@@ -39,9 +39,11 @@ class Ui_MainWindow(QMainWindow):
 
         self.setCentralWidget(self.centralwidget)
         self.setup_marks_label()
-        self.setup_button()
+        self.setup_filter_button()
+        self.setup_replay_button()
         self.setup_again_label()
-        self.setup_show_answer_box()
+
+        self.setup_show_answer_box(self.words,self.UserAns_List,self.correctAns_List,self.answer_correct)
         # self.retranslateUi()
         # QtCore.QMetaObject.connectSlotsByName(self)
 
@@ -50,23 +52,83 @@ class Ui_MainWindow(QMainWindow):
         # _translate = QtCore.QCoreApplication.translate
         # self.setWindowTitle(_translate("MainWindow", "MainWindow"))
 
+    def setup_filter_button(self):
+        buttonLayout = QHBoxLayout()
+        allAns_Button = QPushButton("All")
+        allAns_Button.clicked.connect(self.allAns_ButtonClicked)
+        buttonLayout.addWidget(allAns_Button, stretch=1)
+        wrongAns_Button = QPushButton("Wrong Answer")
+        wrongAns_Button.clicked.connect(self.wrongAns_ButtonClicked)
+        buttonLayout.addWidget( wrongAns_Button, stretch=1)
+        correctAns_Button = QPushButton("Correct Answer")
+        correctAns_Button.clicked.connect(self.correctAns_ButtonClicked)
+        buttonLayout.addWidget(correctAns_Button, stretch=1)
 
-    def setup_button(self):
-        self.buttonBox = QtWidgets.QDialogButtonBox(self.centralwidget)
-        self.buttonBox.setGeometry(QtCore.QRect(510, 500, 191, 41))
-        font = QtGui.QFont()
-        font.setFamily("STCaiyun")
-        font.setPointSize(14)
-        self.buttonBox.setFont(font)
-        self.buttonBox.setStandardButtons(QtWidgets.QDialogButtonBox.No | QtWidgets.QDialogButtonBox.Yes)
-        self.buttonBox.setObjectName("buttonBox")
+        button_widget = QWidget(self.centralwidget)
+        button_widget.setGeometry(QtCore.QRect(165, 160, 500, 50))
+        button_widget.setMaximumSize(self.verticalLayoutWidget.width() - 20, 40)
+        button_widget.setLayout(buttonLayout)
+
+    def allAns_ButtonClicked(self):
+        words = self.words
+        UserAns_List = self.UserAns_List
+        correctAns_List = self.correctAns_List
+        User_answer_correct_list = self.answer_correct 
+        self.stackAnswer.deleteLater()
+        self.stackAnswer = QStackedWidget(self.verticalLayoutWidget)
+        self.setup_show_answer_box(words,UserAns_List,correctAns_List,User_answer_correct_list)
+        self.stackAnswer.show()
+
+    def correctAns_ButtonClicked(self):
+        words = []
+        UserAns_List = []
+        correctAns_List = []
+        User_answer_correct_list = []
+        for index,correct in enumerate(self.answer_correct):
+            if(correct):
+                words.append(self.words[index])
+                UserAns_List.append(self.UserAns_List[index])
+                correctAns_List.append(self.correctAns_List[index])
+                User_answer_correct_list.append(self.answer_correct[index])
+        self.stackAnswer.deleteLater()
+        self.stackAnswer = QStackedWidget(self.verticalLayoutWidget)
+        self.setup_show_answer_box(words,UserAns_List,correctAns_List,User_answer_correct_list)
+        self.stackAnswer.show()
+
+    def wrongAns_ButtonClicked(self):
+        words = []
+        UserAns_List = []
+        correctAns_List = []
+        User_answer_correct_list = []
+        for index, correct in enumerate(self.answer_correct):
+            if (not correct):
+                words.append(self.words[index])
+                UserAns_List.append(self.UserAns_List[index])
+                correctAns_List.append(self.correctAns_List[index])
+                User_answer_correct_list.append(self.answer_correct[index])
+        self.stackAnswer.deleteLater()
+        self.stackAnswer = QStackedWidget(self.verticalLayoutWidget)
+        self.setup_show_answer_box(words,UserAns_List,correctAns_List,User_answer_correct_list)
+        self.stackAnswer.show()
+
+
+
+    def setup_replay_button(self):
+            self.buttonBox = QtWidgets.QDialogButtonBox(self.centralwidget)
+            self.buttonBox.setGeometry(QtCore.QRect(510, 700, 191, 41))
+            font = QtGui.QFont()
+            font.setFamily("STCaiyun")
+            font.setPointSize(14)
+            self.buttonBox.setFont(font)
+            self.buttonBox.setStandardButtons(QtWidgets.QDialogButtonBox.No | QtWidgets.QDialogButtonBox.Yes)
+            self.buttonBox.setObjectName("buttonBox")
 
     def setup_marks_label(self):
         self.label = QtWidgets.QLabel(self.centralwidget)
-        if(self.marks == 100.0):
-            self.label.setGeometry(QtCore.QRect(165, 200, 500, 130))
-        else:
-            self.label.setGeometry(QtCore.QRect(165, 20, 500, 130))
+        # if(self.marks == 100.0):
+        #     self.label.setGeometry(QtCore.QRect(165, 200, 500, 130))
+        # else:
+        self.label.setGeometry(QtCore.QRect(165, 20, 500, 130))
         font = QtGui.QFont()
         font.setFamily("STCaiyun")
         font.setPointSize(20)
@@ -76,15 +138,16 @@ class Ui_MainWindow(QMainWindow):
         self.label.setWordWrap(True)
         self.label.setObjectName("label")
         marks_messages = f"marks : {str(self.marks)}" + "\n"
-        if len(self.wrongAns_List) > 0:
-            marks_messages += f"You have answered {str(len(self.wrongAns_List))} wrong!!!" + "\n"
+        if self.marks != 100:
+            wrong_ans_count = list(filter(lambda  correctAns:correctAns == False, self.answer_correct))
+            marks_messages += f"You have answered {str(len(wrong_ans_count))} wrong!!!" + "\n"
             marks_messages += f"The wrong Answer and right answer shown below"
         else:
-            marks_messages += "Congratulations!!!!!!!!!!!!! \n You got it All right!!!!!!!!"
+            marks_messages += "Congratulations \t!!!!!!!!!!!!! \n You got it All right\t!!!!!!!!"
         self.label.setText(marks_messages)
     def setup_again_label(self):
         self.label_2 = QtWidgets.QLabel(self.centralwidget)
-        self.label_2.setGeometry(QtCore.QRect(80, 490, 461, 51))
+        self.label_2.setGeometry(QtCore.QRect(80, 700, 420, 51))
         font = QtGui.QFont()
         font.setFamily("STCaiyun")
         font.setPointSize(14)
@@ -103,24 +166,39 @@ class Ui_MainWindow(QMainWindow):
         # self.statusbar.setObjectName("statusbar")
         # self.setStatusBar(self.statusbar)
 
-    def setup_show_answer_box(self):
+    def setup_show_answer_box(self,words,UserAns_List,correctAns_List,answer_correct):
         count = 0
         page_layout = QVBoxLayout()
         page_index = 0
-        for (word,wrongAns,correctAns,ans_cor) in zip(self.words,self.wrongAns_List,self.correctAns_List,self.answer_correct):
+        for (word,wrongAns,correctAns,ans_cor) in zip(words,UserAns_List,correctAns_List,answer_correct):
             #setting layout for every wrong answer
             seperated_words_layout = QHBoxLayout()
             #set up wrong word and pos
             word_layout = QVBoxLayout()
             word = str(word).replace("\t","")
-            word_layout.addWidget(QLabel(word))
+            word_widget = QLabel(word)
+            word_font = QtGui.QFont()
+            word_font.setFamily("Mongolian Baiti")
+            word_font.setBold(True)
+            word_font.setPointSize(12)
+            word_widget.setFont(word_font)
+            word_layout.addWidget(word_widget)
             seperated_words_layout.addLayout(word_layout,stretch=1)
             answer_layout = QVBoxLayout()
             #set up correct answer widget
+            Str_Ans_font = QtGui.QFont()
+            Str_Ans_font.setFamily("STHupo")
+            Str_Ans_font.setPointSize(12)
             correctAns_widget = QWidget()
             correctAns_layout = QHBoxLayout()
             Str_CorrectAns = QLabel("Correct Answer: ")
+            Str_CorrectAns.setFont(Str_Ans_font)
+            meaning_font = QtGui.QFont()
+            meaning_font.setFamily("Lucida Console")
+            meaning_font.setPointSize(9)
             correctAns_meaning = QLabel(correctAns)
+            correctAns_meaning.setWordWrap(True)
+            correctAns_meaning.setFont(meaning_font)
             correctAns_layout.addWidget(Str_CorrectAns,stretch=1)
             correctAns_layout.addWidget(correctAns_meaning,stretch=9)
             correctAns_widget.setLayout(correctAns_layout)
@@ -128,8 +206,11 @@ class Ui_MainWindow(QMainWindow):
             # set up wrong answer widget
             WrongAns_widget = QWidget()
             WrongAns_layout = QHBoxLayout()
-            Str_WrongAns = QLabel("User Answer: ")
+            Str_WrongAns = QLabel("User Answer:    ")
+            Str_WrongAns.setFont(Str_Ans_font)
             WrongAns_meaning = QLabel(wrongAns)
+            WrongAns_meaning.setWordWrap(True)
+            WrongAns_meaning.setFont(meaning_font)
             WrongAns_layout.addWidget(Str_WrongAns,stretch=1)
             WrongAns_layout.addWidget(WrongAns_meaning,stretch=9)
             WrongAns_widget.setLayout(WrongAns_layout)
@@ -139,29 +220,28 @@ class Ui_MainWindow(QMainWindow):
             container.setMaximumSize(self.verticalLayoutWidget.width()-20,self.verticalLayoutWidget.height()/2)
             container.setLayout(seperated_words_layout)
             container.setObjectName("Separate_word")
-            # if(ans_cor):
-            #     container.setStyleSheet('QWidget#Separate_word { border: 1px solid green}')
-            # else:
-            #     container.setStyleSheet('QWidget#Separate_word { border: 1px solid red}')
+            if(ans_cor):
+                container.setStyleSheet('QWidget#Separate_word { border: 2px solid green}')
+            else:
+                container.setStyleSheet('QWidget#Separate_word { border: 2px solid red}')
             page_layout.addWidget(container)
-            if count == 1:
+            if count == 1 or (count == 0 and word == words[-1].replace("\t","")):
                 #setup button layout
                 buttonLayout = QHBoxLayout()
-                nextButton = QPushButton("Next")
-                # nextButton.setMaximumSize(self.verticalLayoutWidget.width()/2-20,20)
-                nextButton.clicked.connect(lambda checked, page_index=page_index:self.nextButtonClicked(page_index))
                 if(page_index != 0):
                     backButton = QPushButton("Back")
-                    # backButton.setMaximumSize(self.verticalLayoutWidget.width()/2 - 20, 20)
                     backButton.clicked.connect(
                         lambda checked, page_index=page_index: self.backButtonClicked(page_index))
                     buttonLayout.addWidget(backButton,stretch=1)
-                buttonLayout.addWidget(nextButton,stretch=1)
+                if word != words[-1].replace("\t",""):
+                    nextButton = QPushButton("Next")
+                    nextButton.clicked.connect(lambda checked, page_index=page_index:self.nextButtonClicked(page_index))
+                    buttonLayout.addWidget(nextButton,stretch=1)
                 button_widget = QWidget()
                 button_widget.setMaximumSize(self.verticalLayoutWidget.width()-20,40)
                 button_widget.setLayout(buttonLayout)
                 page_layout.addWidget(button_widget)
-                pageNum = QLabel(f"{str(page_index+1)}/{str(math.ceil(len(self.words)/2))}")
+                pageNum = QLabel(f"{str(page_index+1)}/{str(math.ceil(len(words)/2))}")
                 pageNum.setMaximumSize(self.verticalLayoutWidget.width()-20,40)
                 pageNum.setAlignment(Qt.AlignmentFlag.AlignCenter)
                 page_layout.addWidget(pageNum)
