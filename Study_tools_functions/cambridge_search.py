@@ -82,27 +82,6 @@ class cambridge_search():
                 list_defin.append(defin_dict)
                 defin_dict = {}
                 word_dict_search = ""
-        pprint(list_defin)
-        # for index in range(len(words)):
-        #     same_pos_different_meanings = definitions[index].find_elements(By.CLASS_NAME, "def-block.ddef_block")
-        #     for mean in same_pos_different_meanings:
-        #         word_dict_search += words[index].text + "\n"
-        #         word_dict_search += "({0})".format(pos[index].text) + "\n"
-        #         english_meaning = mean.find_element(By.CLASS_NAME, "def.ddef_d.db").text
-        #         chinese_meaning = mean.find_element(By.CLASS_NAME, "trans.dtrans.dtrans-se.break-cj").text
-        #         example = mean.find_elements(By.CLASS_NAME, "examp.dexamp")
-        #         example = example[0].text if len(example) != 0 else "no example found"
-        #         word_dict_search += "english_meaning:\n" + english_meaning + "\n"
-        #         word_dict_search += "chinese_meaning:\n" + chinese_meaning + "\n"
-        #         word_dict_search += "example:\n" + example + "\n"
-        #         defin_dict["words"] = words[index].text
-        #         defin_dict["pos"] = pos[index].text
-        #         defin_dict["english_meaning"] = english_meaning
-        #         defin_dict["chinese_meaning"] = chinese_meaning
-        #         defin_dict["example"] = example
-        #         list_defin.append(defin_dict)
-        #         defin_dict = {}
-        #         word_dict_search = ""
         return list_defin
     def get_driver(self):
         if getattr(sys,'frozen',False):

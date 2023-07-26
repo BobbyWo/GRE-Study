@@ -16,7 +16,7 @@ class MatchingGameWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         self.notion_call = notion.notion_API()
-        self.setFixedSize(900, 550)
+        self.setFixedSize(1200, 550)
         self.setContentsMargins(25, 5, 25, 5)
         self.vocab_dict = {}
         self.pages_stackWidget = QStackedWidget()
@@ -137,11 +137,12 @@ class MatchingGameWindow(QMainWindow):
         for index,word in enumerate(words_list):
             word_widget = QLabel(word)
             word_widget.setStyleSheet("border: 1px solid black;border-radius: 10px ")
+            word_widget.setMinimumSize(200,20)
             word_widget.setContentsMargins(15, 5, 15, 5)
             word_widget.setAlignment(Qt.AlignmentFlag.AlignCenter)
             word_widget_list.append(word_widget)
             answer_box = QLabel()
-            answer_box.setFixedSize(161,200)
+            answer_box.setFixedSize(200,200)
             answer_box.setAlignment(Qt.AlignmentFlag.AlignCenter)
             answer_box.setStyleSheet("border: 1px solid black;")
             self.page_answerbox_list.append(answer_box)
@@ -164,7 +165,7 @@ class MatchingGameWindow(QMainWindow):
             item.posChanged.connect(self.checkCoverage)
             item.setWordWrap(True)
             item.setStyleSheet("border: 1px solid black;padding-top: 10px;padding-left: 10px;padding-right: 10px")
-            item.setFixedSize(161, 200)
+            item.setFixedSize(200, 200)
             item.set_data(word_index)
             self.answer_list.append(item)
         random.shuffle(self.answer_list)

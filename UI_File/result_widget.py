@@ -12,6 +12,8 @@ import math
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import *
+#
+# from UI_File.MatchingGame import MatchingGameWindow
 
 
 class Ui_MainWindow(QMainWindow):
@@ -23,7 +25,7 @@ class Ui_MainWindow(QMainWindow):
         self.UserAns_List = UserAns_List
         self.correctAns_List = correctAns_List
         self.answer_correct = answer_correct
-        self.setFixedSize(800, 800)
+        self.setFixedSize(800, 1000)
         self.setupUi()
     def setupUi(self):
 
@@ -121,8 +123,19 @@ class Ui_MainWindow(QMainWindow):
             font.setPointSize(14)
             self.buttonBox.setFont(font)
             self.buttonBox.setStandardButtons(QtWidgets.QDialogButtonBox.No | QtWidgets.QDialogButtonBox.Yes)
-            self.buttonBox
+            self.buttonBox.accepted.connect(self.YesButtonClicked)
+            self.buttonBox.rejected.connect(self.NoButtonClicked)
             self.buttonBox.setObjectName("buttonBox")
+
+    def YesButtonClicked(self):
+        # self.matching_game = MatchingGameWindow()
+        # self.matching_game.show()
+        self.deleteLater()
+
+
+    def NoButtonClicked(self):
+        self.deleteLater()
+
 
     def setup_marks_label(self):
         self.label = QtWidgets.QLabel(self.centralwidget)
