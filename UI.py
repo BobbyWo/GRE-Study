@@ -154,8 +154,8 @@ class MyWindow(QMainWindow):
         if(not self.hasChoice):
             if self.Notion_call_enabled:
                 self.notion_call.insert_table_row(self.content)
-            self.file_io.writeVocabFile(os.path.join(self.TOFEL_file_path,"Chapter5"),"vocab.txt",self.content[0])
-            self.file_io.writeMeaningFile(os.path.join(self.TOFEL_file_path,"Chapter5"),"meaning.txt",self.content[1] + "\t" + self.content[2])
+            self.file_io.writeVocabFile(os.path.join(self.TOFEL_file_path,"Chapter6"),"vocab.txt",self.content[0])
+            self.file_io.writeMeaningFile(os.path.join(self.TOFEL_file_path,"Chapter6"),"meaning.txt",self.content[1] + "\t" + self.content[2])
     def Question_Vocab_Search_Button_clicked(self):
         search_word = self.searchWord.text()
         # definition = self.dict_search.search(search_word)
@@ -221,8 +221,8 @@ class MyWindow(QMainWindow):
         self.content = (self.choice_dict[key].property("content"))
         if self.Notion_call_enabled:
             self.notion_call.insert_table_row(self.content)
-        self.file_io.writeVocabFile(os.path.join(self.TOFEL_file_path, "Chapter5"), "vocab.txt", self.content[0])
-        self.file_io.writeMeaningFile(os.path.join(self.TOFEL_file_path, "Chapter5"), "meaning.txt",
+        self.file_io.writeVocabFile(os.path.join(self.TOFEL_file_path, "Chapter6"), "vocab.txt", self.content[0])
+        self.file_io.writeMeaningFile(os.path.join(self.TOFEL_file_path, "Chapter6"), "meaning.txt",
                                       self.content[1] + "\t" + self.content[2])
         for all in self.notificationBox.children():
             all.deleteLater()
