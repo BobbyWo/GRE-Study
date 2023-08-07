@@ -61,6 +61,8 @@ class cambridge_search():
         word_dict_search = ""
         words = self.driver.find_elements(By.CLASS_NAME, "headword.hdb.tw-bw.dhw.dpos-h_hw")
         pos = self.driver.find_elements(By.CLASS_NAME, "pos.dpos")
+        if(len(pos) == 0):
+            return list_defin
         same_pos_body = self.driver.find_elements(By.CLASS_NAME, "pos-body")
         for index,same_pos in enumerate(same_pos_body):
             definitions = same_pos.find_elements(By.CLASS_NAME, "sense-body.dsense_b")
