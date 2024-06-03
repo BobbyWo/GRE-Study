@@ -3,6 +3,8 @@ import os
 import random
 from pprint import pprint
 
+import qdarkstyle
+
 from UI_File.movable_widget import MyMovableWidget
 from Study_tools_functions import notion
 from UI_File.result_widget import Ui_MainWindow
@@ -247,9 +249,10 @@ class MatchingGameWindow(QMainWindow):
 
         self.deleteLater()
 
-#
-# app = QApplication([])
-# w = MatchingGameWindow()
-# w.show()
-#
-# app.exec_()
+if __name__ == "__main__":
+    app = QApplication([])
+    app.setStyleSheet(qdarkstyle.load_stylesheet_pyqt5())
+    w = MatchingGameWindow()
+    w.show()
+
+    app.exec_()
