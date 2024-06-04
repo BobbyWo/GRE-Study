@@ -1,0 +1,7 @@
+PyQt5
+qdarkstyle
+pyperclip
+notion-client
+selenium
+opencv-python
+pytesseract
