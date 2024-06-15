@@ -18,7 +18,7 @@ class MatchingGameWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         self.notion_call = notion.notion_API()
-        self.setFixedSize(1200, 550)
+        self.setFixedSize(1500, 550)
         self.setContentsMargins(25, 5, 25, 5)
         self.vocab_dict = {}
         self.pages_stackWidget = QStackedWidget()
