@@ -21,6 +21,7 @@ class MyWindow(QMainWindow):
         self.Quizlet_file_path = "vocab_source/Quizlet_Vocab"
         self.TOFEL_book_file_path = "vocab_source/TOFEL_book_Vocab"
         self.TOFEL_online_file_path = "vocab_source/TOEFL_Vocab"
+        self.TPO_book_file_path = "vocab_source/TPO_Book"
         self.kaplan_vocab_table_id = "0bc17826-0f8a-4497-bcf5-9923a205b314"
         self.new_tofel_vocab_120_table_id = "70a74c01-2fc3-4eec-9420-4f08a37f2f3a"
         f = open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "config.json"))
@@ -157,8 +158,8 @@ class MyWindow(QMainWindow):
         if(not self.hasChoice):
             if self.Notion_call_enabled:
                 self.notion_call.insert_table_row(self.content)
-            self.file_io.writeVocabFile(os.path.join(self.TOFEL_online_file_path, "Section_4"),"vocab.txt",self.content[0])
-            self.file_io.writeMeaningFile(os.path.join(self.TOFEL_online_file_path, "Section_4"),"meaning.txt",self.content[1] + "\t" + self.content[2])
+            self.file_io.writeVocabFile(os.path.join(self.TPO_book_file_path, "word_list_20"),"vocab.txt",self.content[0])
+            self.file_io.writeMeaningFile(os.path.join(self.TPO_book_file_path, "word_list_20"),"meaning.txt",self.content[1] + "\t" + self.content[2])
     def Question_Vocab_Search_Button_clicked(self):
         search_word = self.searchWord.text()
         # definition = self.dict_search.search(search_word)
@@ -224,8 +225,8 @@ class MyWindow(QMainWindow):
         self.content = (self.choice_dict[key].property("content"))
         if self.Notion_call_enabled:
             self.notion_call.insert_table_row(self.content)
-        self.file_io.writeVocabFile(os.path.join(self.TOFEL_online_file_path, "Section_4"), "vocab.txt", self.content[0])
-        self.file_io.writeMeaningFile(os.path.join(self.TOFEL_online_file_path, "Section_4"), "meaning.txt",
+        self.file_io.writeVocabFile(os.path.join(self.TPO_book_file_path, "word_list_20"), "vocab.txt", self.content[0])
+        self.file_io.writeMeaningFile(os.path.join(self.TPO_book_file_path, "word_list_20"), "meaning.txt",
                                       self.content[1] + "\t" + self.content[2])
         for all in self.notificationBox.children():
             all.deleteLater()
