@@ -231,7 +231,7 @@ class Ui_MainWindow(QMainWindow):
             answer_layout.addWidget(WrongAns_widget)
             seperated_words_layout.addLayout(answer_layout,stretch=4)
             container = QWidget()
-            container.setMaximumSize(self.verticalLayoutWidget.width()-20,self.verticalLayoutWidget.height()/2)
+            container.setMaximumSize(int(self.verticalLayoutWidget.width()-20),int(self.verticalLayoutWidget.height()/2))
             container.setLayout(seperated_words_layout)
             container.setObjectName("Separate_word")
             if(ans_cor):

@@ -22,6 +22,7 @@ class file_io():
             if(words.__contains__('')):
                 words.remove('')
             vocab_list.extend(words)
+            f.close()
         return vocab_list
 
     def readMeaningfile(self,file_path):
@@ -46,6 +47,7 @@ class file_io():
                 if(chinese_meaning):
                     defin += "chinese_meaning:\n" + chinese_meaning
                 vocab_list.append(defin)
+            f.close()
         return  vocab_list
 
     def writeVocabFile(self,file_path,file_name,content):

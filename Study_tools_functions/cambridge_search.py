@@ -92,7 +92,7 @@ class cambridge_search():
         else:
             f = open(os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__file__))), "config.json"))
             data = json.load(f)
-            chrome_driver_path = data["chrome_driver_path"]
-            driver = webdriver.Chrome(chrome_driver_path)
-            # driver = webdriver.Chrome()
+            # chrome_driver_path = data["chrome_driver_path"]
+            # driver = webdriver.Chrome(chrome_driver_path)
+            driver = webdriver.Chrome()
         return driver
