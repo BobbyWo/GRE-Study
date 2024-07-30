@@ -1,13 +1,12 @@
 import json
 import os
 import random
-from pprint import pprint
 
 import qdarkstyle
 
-from UI_File.movable_widget import MyMovableWidget
+from UI_File.label.movable_label import MyMovableWidget
 from Study_tools_functions import notion
-from UI_File.result_widget import Ui_MainWindow
+from UI_File.window.result_window import Ui_MainWindow
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 import math

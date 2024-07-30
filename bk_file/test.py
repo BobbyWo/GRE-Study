@@ -7,14 +7,19 @@ import sys
 import qdarkstyle
 import pyperclip
 
+from PyQt5.QtCore import Qt
 from Study_tools_functions import notion, cambridge_search, File_io
 from Study_tools_functions.Snip_window import SnipWidget
 from UI_File.window.matching_game_window import MatchingGameWindow
+from UI_File.button.UI_button import UI_button
 class MyWindow(QMainWindow):
     def __init__(self, parent=None):
         super(MyWindow, self).__init__()
         self.win_width = 900
         self.win_height = 1000
+        self.horizontal_margin = 20
+        self.vertical_margin = 10
+        self.current_chapter = ""
         self.file_io = File_io.file_io()
         self.kaplan_file_path = "vocab_source/GRE_kaplan_book"
         self.Kaptest_file_path = "vocab_source/Kaptest_Vocab"
@@ -24,112 +29,136 @@ class MyWindow(QMainWindow):
         self.TPO_book_file_path = "vocab_source/TPO_Book"
         self.kaplan_vocab_table_id = "0bc17826-0f8a-4497-bcf5-9923a205b314"
         self.new_tofel_vocab_120_table_id = "70a74c01-2fc3-4eec-9420-4f08a37f2f3a"
-        f = open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "config.json"))
+        f = open(os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__file__))), "config.json"))
         self.data = json.load(f)
         self.Notion_call_enabled = self.data["Notion_call_enabled"] == 'Y'
-        self.setGeometry(50, 50, self.win_width, self.win_height)
+        # self.setGeometry(50, 50, self.win_width, self.win_height)
         self.setWindowTitle("GRE study tools")
         self.dict_search = cambridge_search.cambridge_search()
         if self.Notion_call_enabled:
             self.notion_call = notion.notion_API()
         self.initUI()
 
+    def sourceOnChanged(self,text):
+        self.current_chapter = text
+        print(self.current_chapter)
     def initUI(self):
-        self.searchDirlabel = QLabel(self)
-        self.searchDirlabel.move(10, 10)
-        self.searchDirlabel.setText('Page')
-        self.searchDirlabel.adjustSize()
-        if self.Notion_call_enabled:
-            self.combo = QComboBox(self)
-            pages = self.notion_call.get_block_list()
-            self.page = dict(pages)
-            for key in self.page.keys():
-                self.combo.addItem(key)
-            self.combo.move(10, 30)
-            self.combo.setFixedSize(self.win_width - 20, 20)
-            self.combo.activated[str].connect(self.onChanged)
-        # self.select_chapter = QHBoxLayout(self)
-        # self.chaptercombo = QComboBox()
-        # self.sourceDir = self.data["vocab_source_path"]
-        # self.chaptercombo.move(20,40)
-        # self.chaptercombo.addItem("-")
-        # for source in os.listdir(self.sourceDir):
-        #     self.chaptercombo.addItem(source)
-        # self.select_chapter.addWidget(self.chaptercombo)
-        # Define buttons
-        x = 1
-        self.I_T_S_Question = QPushButton(self)
-        self.I_T_S_Question.setText("Image to String(Question)")
-        self.I_T_S_Question.move(int((self.win_width / 4 * (x - 1)) + 10), 75)
-        self.I_T_S_Question.setFixedSize(150, 40)
-        self.I_T_S_Question.clicked.connect(self.Question_Button_clicked)
-        x += 1
+    #     self.initializedNoti()
 
-        self.I_T_S_Answer = QPushButton(self)
-        self.I_T_S_Answer.setText("Image to String(Answer)")
-        self.I_T_S_Answer.move(int((self.win_width / 4 * (x - 1)) + 10), 75)
-        self.I_T_S_Answer.setFixedSize(150, 40)
-        self.I_T_S_Answer.clicked.connect(self.Answer_Button_clicked)
-        x += 1
 
-        self.createTable = QPushButton(self)
-        self.createTable.setText("Create Table")
-        self.createTable.move(int((self.win_width / 4 * (x - 1)) + 10), 75)
-        self.createTable.setFixedSize(150, 40)
-        self.createTable.clicked.connect(self.CreateTable_Button_clicked)
-        x += 1
+        GRE_layout = self.init_GRE_layout()
+        insert_chapter_layout = self.init_insert_chapter_layout()
+        search_word_layout = self.init_search_word_layout()
+        search_button_layout = self.init_search_button_layout()
+        noti_box_layout = self.init_noti_box_layout()
 
-        self.paraTrans = QPushButton(self)
-        self.paraTrans.setText("Image to String(translation)")
-        self.paraTrans.move(int((self.win_width / 4 * (x - 1)) + 10), 75)
-        self.paraTrans.setFixedSize(150, 40)
-        self.paraTrans.clicked.connect(self.ParagraphTranslation_Button_clicked)
-        x += 1
+        ## final UI layout
+        container = QWidget()
+        layout = QVBoxLayout()
+        layout.addStretch(1)
+        layout.addLayout(GRE_layout)
+        layout.addStretch(1)
+        layout.addLayout(insert_chapter_layout)
+        layout.addStretch(1)
+        layout.addLayout(search_word_layout)
+        layout.addStretch(1)
+        layout.addLayout(search_button_layout)
+        layout.addStretch(1)
+        layout.addLayout(noti_box_layout)
+        layout.addStretch(1)
+        container.setLayout(layout)
+        self.setCentralWidget(container)
 
-        self.searchWordLable = QLabel(self)
-        self.searchWordLable.move(10, 125)
-        self.searchWordLable.setText('search Word')
-        self.searchWordLable.adjustSize()
-        # self.page
+    def init_GRE_layout(self):
+        GRE_layout = QHBoxLayout()
+        GRE_layout.setAlignment(Qt.AlignLeft)
+        GRE_layout.setContentsMargins(self.horizontal_margin, self.vertical_margin, self.horizontal_margin, 0)
+        GRE_layout.setSpacing(50)
 
-        self.searchWord = QLineEdit(self)
-        self.searchWord.move(10, 145)
+        I_T_S_Question = UI_button("Image to String(Question)")
+        I_T_S_Question.clicked.connect(self.Question_Button_clicked)
+        GRE_layout.addWidget(I_T_S_Question)
+
+        I_T_S_Answer = UI_button("Image to String(Answer)")
+        I_T_S_Answer.clicked.connect(self.Answer_Button_clicked)
+        GRE_layout.addWidget(I_T_S_Answer)
+
+        createTable = UI_button("Create Table")
+        createTable.clicked.connect(self.CreateTable_Button_clicked)
+        GRE_layout.addWidget(createTable)
+
+        paraTrans = UI_button("Image to String(translation)")
+        paraTrans.clicked.connect(self.ParagraphTranslation_Button_clicked)
+        GRE_layout.addWidget(paraTrans)
+        return GRE_layout
+
+    def init_insert_chapter_layout(self):
+        insert_chapter_layout = QHBoxLayout()
+        insert_chapter_layout.setContentsMargins(self.horizontal_margin, self.vertical_margin, self.horizontal_margin, 0)
+
+        combo = QComboBox()
+        combo.addItem("-")
+        f = open(os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__file__))), "config.json"))
+        data = json.load(f)
+        sourceDir = data["vocab_source_path"]
+        for source in os.listdir(sourceDir):
+            combo.addItem(source)
+        combo.activated[str].connect(self.sourceOnChanged)
+        insert_chapter_layout.addWidget(combo)
+        return insert_chapter_layout
+
+    def init_search_word_layout(self):
+        search_word_layout = QVBoxLayout()
+        search_word_layout.setContentsMargins(self.horizontal_margin, self.vertical_margin, self.horizontal_margin, 0)
+        searchDirlabel = QLabel()
+        searchDirlabel.setText('search Word')
+        searchDirlabel.adjustSize()
+        search_word_layout.addWidget(searchDirlabel)
+
+
+        self.searchWord = QLineEdit()
         self.searchWord.setFixedSize(self.win_width - 20, 20)
+        search_word_layout.addWidget(self.searchWord)
+        return search_word_layout
+    
+    def init_search_button_layout(self):
+        search_button_layout = QHBoxLayout()
+        search_button_layout.setAlignment(Qt.AlignLeft)
+        search_button_layout.setContentsMargins(self.horizontal_margin, self.vertical_margin, self.horizontal_margin, 0)
+        search_button_layout.setSpacing(50)
 
-        self.comment = QPushButton(self)
-        self.comment.setText("Question Vocab Search")
-        self.comment.move(10, 170)
-        self.comment.setFixedSize(150, 40)
-        self.comment.clicked.connect(self.Question_Vocab_Search_Button_clicked)
+        vocab_search_button = UI_button("Question Vocab Search")
+        vocab_search_button.clicked.connect(self.Question_Vocab_Search_Button_clicked)
+        search_button_layout.addWidget(vocab_search_button)
 
-        self.click_and_insert_table = QPushButton(self)
-        self.click_and_insert_table.setText("Search and insert into table")
-        self.click_and_insert_table.move(200, 170)
-        self.click_and_insert_table.setFixedSize(150, 40)
-        self.click_and_insert_table.clicked.connect(self.insertIntoTable)
+        search_and_insert_button = UI_button("Search and insert into table")
+        search_and_insert_button.clicked.connect(self.insertIntoTable)
+        search_button_layout.addWidget(search_and_insert_button)
 
-        self.play_matching_game = QPushButton(self)
-        self.play_matching_game.setText("Play matching game")
-        self.play_matching_game.move(390, 170)
-        self.play_matching_game.setFixedSize(150, 40)
-        self.play_matching_game.clicked.connect(self.Matching_Button_Clicked)
-
+        play_game_button = UI_button("Play matching game")
+        play_game_button.clicked.connect(self.Matching_Button_Clicked)
+        search_button_layout.addWidget(play_game_button)
+        return search_button_layout
+    
+    def init_noti_box_layout(self):
+        noti_box_layout = QVBoxLayout()
+        noti_box_layout.setContentsMargins(self.horizontal_margin, self.vertical_margin, self.horizontal_margin, 0)
+        self.notificationBox = QGroupBox("Notification Box")
+        self.notificationBox.setFixedSize(self.win_width - 20, 500)
         self.layout = QHBoxLayout()
-        self.notificationBox = QGroupBox("Notification Box", self)
-        self.notificationBox.move(10, 220)
-        self.notificationText = QLabel(self)
+        self.notificationText = QLabel()
+        self.layout.addWidget(self.notificationText)
+        self.notificationBox.setLayout(self.layout)
+        noti_box_layout.addWidget(self.notificationBox)
+        return noti_box_layout
 
-        self.initializedNoti()
-
-    def sourceOnChanged(self):
-        pass
     def initializedNoti(self):
-        self.notificationBox.setFixedSize(self.win_width - 20, 55)
+        self.notificationBox.setFixedSize(self.win_width - 20, 500)
         self.layout = QHBoxLayout()
         self.notificationText = QLabel(self)
         self.layout.addWidget(self.notificationText)
         self.notificationBox.setLayout(self.layout)
-
+    #
     def Question_Button_clicked(self):
         self.snipWin = SnipWidget("I_T_S_Question", self)
         self.snipWin.notification_signal.connect(self.reset_notif_text)
@@ -154,20 +183,21 @@ class MyWindow(QMainWindow):
         self.snipWin.show()
         self.notificationText.setText("paragraph translation button clicked")
         self.update_notif()
-
+    #
     def Matching_Button_Clicked(self):
         self.matching_game = MatchingGameWindow()
         self.matching_game.show()
     def insertIntoTable(self):
-        self.Question_Vocab_Search_Button_clicked()
+        self.Question_Vocab_Search_Button_clicked(insert=True)
         if(len(self.content_list) == 0 ):
             return
         if(not self.hasChoice):
             if self.Notion_call_enabled:
                 self.notion_call.insert_table_row(self.content)
-            self.file_io.writeVocabFile(os.path.join(self.TOFEL_book_file_path, "Chapter10(Unit20-21)"),"vocab.txt",self.content[0])
-            self.file_io.writeMeaningFile(os.path.join(self.TOFEL_book_file_path, "Chapter10(Unit20-21)"),"meaning.txt",self.content[1] + "\t" + self.content[2])
-    def Question_Vocab_Search_Button_clicked(self):
+            self.file_io.writeVocabFile(os.path.join(self.TOFEL_book_file_path, "test"),"vocab.txt",self.content[0])
+            self.file_io.writeMeaningFile(os.path.join(self.TOFEL_book_file_path, "test"),"meaning.txt",self.content[1] + "\t" + self.content[2])
+
+    def Question_Vocab_Search_Button_clicked(self,insert=False):
         search_word = self.searchWord.text()
         # definition = self.dict_search.search(search_word)
         definition = self.dict_search.Enhance_search(search_word)
@@ -189,11 +219,11 @@ class MyWindow(QMainWindow):
             self.content_list.append(self.content)
         if len(defiList) > 1:
             self.hasChoice = True
-            self.giveChoice(defiList)
+            self.giveChoice(defiList,insert)
         else:
             self.hasChoice = False
             if self.notificationText:
-                self.notificationBox.setFixedSize(self.win_width - 20, 300)
+                self.notificationBox.setFixedSize(self.win_width - 20, 500)
             else:
                 self.notificationText = QLabel(self)
             self.notificationText.setText(output_str)
@@ -201,7 +231,9 @@ class MyWindow(QMainWindow):
                 self.layout = QHBoxLayout()
             self.notificationBox.setLayout(self.layout)
             pyperclip.copy(output_str)
-    def giveChoice(self, defiList):
+        # self.reset_notif_text()
+
+    def giveChoice(self, defiList,insert):
         self.notificationText.deleteLater()
         self.choice_dict = {}
         for i, numDefi in enumerate(defiList):
@@ -218,7 +250,7 @@ class MyWindow(QMainWindow):
             value.setProperty("defi", defi.text())
             value.setProperty("content",self.content_list[i])
             self.choice_dict[key] = value
-            self.choice_dict[key].clicked.connect(lambda checked, a=key: self.choiceButtonClicked(a))
+            self.choice_dict[key].clicked.connect(lambda checked, a=key,b=insert: self.choiceButtonClicked(a,b))
 
             choice.addWidget(value)
             self.layout.addLayout(choice)
@@ -226,15 +258,16 @@ class MyWindow(QMainWindow):
             self.layout = QHBoxLayout()
         self.notificationBox.setLayout(self.layout)
         self.notificationBox.setFixedSize(self.win_width - 20, 500)
-
-    def choiceButtonClicked(self, key):
+    #
+    def choiceButtonClicked(self, key,insert):
         pyperclip.copy(self.choice_dict[key].property("defi"))
         self.content = (self.choice_dict[key].property("content"))
         if self.Notion_call_enabled:
             self.notion_call.insert_table_row(self.content)
-        self.file_io.writeVocabFile(os.path.join(self.TOFEL_book_file_path, "Chapter10(Unit20-21)"), "vocab.txt", self.content[0])
-        self.file_io.writeMeaningFile(os.path.join(self.TOFEL_book_file_path, "Chapter10(Unit20-21)"), "meaning.txt",
-                                      self.content[1] + "\t" + self.content[2])
+        if(insert):
+            self.file_io.writeVocabFile(os.path.join(self.TOFEL_book_file_path, "test"), "vocab.txt", self.content[0])
+            self.file_io.writeMeaningFile(os.path.join(self.TOFEL_book_file_path, "test"), "meaning.txt",
+                                          self.content[1] + "\t" + self.content[2])
         for all in self.notificationBox.children():
             all.deleteLater()
         self.initializedNoti()
