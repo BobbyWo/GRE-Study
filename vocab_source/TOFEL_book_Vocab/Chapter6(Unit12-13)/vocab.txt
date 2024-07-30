@@ -13,7 +13,7 @@ anorexic	(noun)
 metabolize	(verb)
 discrepancy	(noun)
 lynch	(verb)
-luminescent	(adjective)
+luminescent	luminescent
 malnutrition	(noun)
 mangled	(adjective)
 stabilize	(verb)

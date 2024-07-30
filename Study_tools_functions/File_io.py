@@ -49,6 +49,16 @@ class file_io():
                 vocab_list.append(defin)
             f.close()
         return  vocab_list
+    def readExampleFile(self,file_path):
+        example_list = []
+        with open(file_path,encoding='utf-8') as f:
+            lines = f.read()
+            words = lines.split("\n")
+            if(words.__contains__('')):
+                words.remove('')
+            example_list.extend(words)
+            f.close()
+        return example_list
 
     def writeVocabFile(self,file_path,file_name,content):
         content = str(content).replace("\n","\t")

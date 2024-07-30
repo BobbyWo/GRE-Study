@@ -1,6 +1,7 @@
 import json
 import os.path
 import sys
+import time
 from pprint import pprint
 
 from selenium import webdriver
@@ -67,23 +68,32 @@ class cambridge_search():
         for index,same_pos in enumerate(same_pos_body):
             definitions = same_pos.find_elements(By.CLASS_NAME, "sense-body.dsense_b")
             for defin in definitions:
-                word_dict_search += words[index].text + "\n"
-                word_dict_search += "({0})".format(pos[index].text) + "\n"
-                english_meaning = defin.find_element(By.CLASS_NAME, "def.ddef_d.db").text
-                chinese_meaning = defin.find_element(By.CLASS_NAME, "trans.dtrans.dtrans-se.break-cj").text
-                example = defin.find_elements(By.CLASS_NAME, "examp.dexamp")
-                example = example[0].text if len(example) != 0 else "no example found"
-                word_dict_search += "english_meaning:\n" + english_meaning + "\n"
-                word_dict_search += "chinese_meaning:\n" + chinese_meaning + "\n"
-                word_dict_search += "example:\n" + example + "\n"
-                defin_dict["words"] = words[index].text
-                defin_dict["pos"] = pos[index].text
-                defin_dict["english_meaning"] = english_meaning
-                defin_dict["chinese_meaning"] = chinese_meaning
-                defin_dict["example"] = example
-                list_defin.append(defin_dict)
-                defin_dict = {}
-                word_dict_search = ""
+                similar_mean = defin.find_elements(By.CLASS_NAME, "def-block.ddef_block")
+                for mean in similar_mean:
+                    try:
+                        word_dict_search += words[index].text + "\n"
+                    except:
+                        time.sleep(1)
+                        word_dict_search += words[index].text + "\n"
+                    word_dict_search += "({0})".format(pos[index].text) + "\n"
+                    english_meaning = mean.find_element(By.CLASS_NAME, "def.ddef_d.db").text
+                    try:
+                        chinese_meaning = mean.find_element(By.CLASS_NAME, "trans.dtrans.dtrans-se.break-cj").text
+                    except:
+                        chinese_meaning = "沒有中文解釋"
+                    example = mean.find_elements(By.CLASS_NAME, "examp.dexamp")
+                    example = example[0].text if len(example) != 0 else "no example found"
+                    word_dict_search += "english_meaning:\n" + english_meaning + "\n"
+                    word_dict_search += "chinese_meaning:\n" + chinese_meaning + "\n"
+                    word_dict_search += "example:\n" + example + "\n"
+                    defin_dict["words"] = words[index].text
+                    defin_dict["pos"] = pos[index].text
+                    defin_dict["english_meaning"] = english_meaning
+                    defin_dict["chinese_meaning"] = chinese_meaning
+                    defin_dict["example"] = example
+                    list_defin.append(defin_dict)
+                    defin_dict = {}
+                    word_dict_search = ""
         return list_defin
     def get_driver(self):
         if getattr(sys,'frozen',False):
