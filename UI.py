@@ -304,12 +304,6 @@ class MyWindow(QMainWindow):
                                           self.content[1] + "\t" + self.content[2])
             self.file_io.writeMeaningFile(self.full_chapter_path, "example.txt",
                                           str(self.content[3]).replace("\n", "\t"))
-        else:
-            if self.notificationText:
-                self.notificationBox.setFixedSize(self.win_width - 20, 500)
-            else:
-                self.notificationText = QLabel()
-            self.notificationText.setText("You should select chapter in order to insert!!!!")
         for all in self.notificationBox.children():
             all.deleteLater()
         self.initializedNoti()
