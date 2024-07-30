@@ -21,7 +21,10 @@ class MyWindow(QMainWindow):
         self.win_height = 1000
         self.horizontal_margin = 20
         self.vertical_margin = 10
+        self.vocab_source_path = "vocab_source"
+        self.current_section = ""
         self.current_chapter = ""
+        self.full_chapter_path = ""
         self.file_io = File_io.file_io()
         self.kaplan_file_path = "vocab_source/GRE_kaplan_book"
         self.Kaptest_file_path = "vocab_source/Kaptest_Vocab"
@@ -29,8 +32,8 @@ class MyWindow(QMainWindow):
         self.TOFEL_book_file_path = "vocab_source/TOFEL_book_Vocab"
         self.TOFEL_online_file_path = "vocab_source/TOEFL_Vocab"
         self.TPO_book_file_path = "vocab_source/TPO_Book"
-        self.kaplan_vocab_table_id = "0bc17826-0f8a-4497-bcf5-9923a205b314"
-        self.new_tofel_vocab_120_table_id = "70a74c01-2fc3-4eec-9420-4f08a37f2f3a"
+        # self.kaplan_vocab_table_id = "0bc17826-0f8a-4497-bcf5-9923a205b314"
+        # self.new_tofel_vocab_120_table_id = "70a74c01-2fc3-4eec-9420-4f08a37f2f3a"
         f = open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "config.json"))
         self.data = json.load(f)
         self.Notion_call_enabled = self.data["Notion_call_enabled"] == 'Y'
@@ -41,15 +44,39 @@ class MyWindow(QMainWindow):
             self.notion_call = notion.notion_API()
         self.initUI()
 
+    def delete_chapter_box(self):
+        print(self.insert_chapter_layout.count())
+        widgets = (self.insert_chapter_layout.itemAt(i).widget() for i in range(1, self.insert_chapter_layout.count()))
+        for widget in widgets:
+            self.insert_chapter_layout.removeWidget(widget)
+
     def sourceOnChanged(self, text):
-        self.current_chapter = text
-        print(self.current_chapter)
+        if(text == "-"):
+            self.delete_chapter_box()
+            return
+        if(self.insert_chapter_layout.count() >1):
+            self.delete_chapter_box()
+        self.current_section = text
+        curr_section = os.path.join(self.vocab_source_path,self.current_section)
+        chapter_box = QComboBox()
+        chapter_box.addItem("-")
+        # chapter_box.addItem("All")
+        for chapter in os.listdir(curr_section):
+            chapter_box.addItem(chapter)
+        self.insert_chapter_layout.addWidget(chapter_box)
+        chapter_box.activated[str].connect(self.chapterOnChanged)
+
+    def chapterOnChanged(self,chapter):
+        if(chapter == "-"):
+            return
+        self.current_chapter = chapter
+        self.full_chapter_path = os.path.join(self.vocab_source_path,self.current_section,self.current_chapter)
+        print(self.full_chapter_path)
 
     def initUI(self):
-        #     self.initializedNoti()
 
         GRE_layout = self.init_GRE_layout()
-        insert_chapter_layout = self.init_insert_chapter_layout()
+        self.insert_chapter_layout = self.init_insert_chapter_layout()
         search_word_layout = self.init_search_word_layout()
         search_button_layout = self.init_search_button_layout()
         noti_box_layout = self.init_noti_box_layout()
@@ -60,7 +87,7 @@ class MyWindow(QMainWindow):
         layout.addStretch(1)
         layout.addLayout(GRE_layout)
         layout.addStretch(1)
-        layout.addLayout(insert_chapter_layout)
+        layout.addLayout(self.insert_chapter_layout)
         layout.addStretch(1)
         layout.addLayout(search_word_layout)
         layout.addStretch(1)
@@ -96,18 +123,14 @@ class MyWindow(QMainWindow):
 
     def init_insert_chapter_layout(self):
         insert_chapter_layout = QHBoxLayout()
-        insert_chapter_layout.setContentsMargins(self.horizontal_margin, self.vertical_margin, self.horizontal_margin,
-                                                 0)
-
-        combo = QComboBox()
-        combo.addItem("-")
-        # f = open(os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__file__))), "config.json"))
-        # data = json.load(f)
+        insert_chapter_layout.setContentsMargins(self.horizontal_margin, self.vertical_margin, self.horizontal_margin,0)
+        self.combo = QComboBox()
+        self.combo.addItem("-")
         sourceDir = self.data["vocab_source_path"]
         for source in os.listdir(sourceDir):
-            combo.addItem(source)
-        combo.activated[str].connect(self.sourceOnChanged)
-        insert_chapter_layout.addWidget(combo)
+            self.combo.addItem(source)
+        self.combo.activated[str].connect(self.sourceOnChanged)
+        insert_chapter_layout.addWidget(self.combo)
         return insert_chapter_layout
 
     def init_search_word_layout(self):
@@ -196,12 +219,16 @@ class MyWindow(QMainWindow):
         self.Question_Vocab_Search_Button_clicked(insert=True)
         if (len(self.content_list) == 0):
             return
-        if (not self.hasChoice):
+        if (not self.hasChoice and (self.current_chapter is not None and self.current_chapter != "")):
             if self.Notion_call_enabled:
                 self.notion_call.insert_table_row(self.content)
-            self.file_io.writeVocabFile(os.path.join(self.TOFEL_book_file_path, "test"), "vocab.txt", self.content[0])
-            self.file_io.writeMeaningFile(os.path.join(self.TOFEL_book_file_path, "test"), "meaning.txt",
+            self.file_io.writeVocabFile(self.full_chapter_path, "vocab.txt", self.content[0])
+            self.file_io.writeMeaningFile(self.full_chapter_path, "meaning.txt",
                                           self.content[1] + "\t" + self.content[2])
+            self.file_io.writeMeaningFile(self.full_chapter_path, "example.txt",
+                                          self.content[3])
+        else:
+            self.notificationText.setText("You should select chapter in order to insert!!!!")
 
     def Question_Vocab_Search_Button_clicked(self, insert=False):
         search_word = self.searchWord.text()
@@ -231,7 +258,7 @@ class MyWindow(QMainWindow):
             if self.notificationText:
                 self.notificationBox.setFixedSize(self.win_width - 20, 500)
             else:
-                self.notificationText = QLabel(self)
+                self.notificationText = QLabel()
             self.notificationText.setText(output_str)
             if self.layout == None:
                 self.layout = QHBoxLayout()
@@ -271,10 +298,18 @@ class MyWindow(QMainWindow):
         self.content = (self.choice_dict[key].property("content"))
         if self.Notion_call_enabled:
             self.notion_call.insert_table_row(self.content)
-        if (insert):
-            self.file_io.writeVocabFile(os.path.join(self.TOFEL_book_file_path, "test"), "vocab.txt", self.content[0])
-            self.file_io.writeMeaningFile(os.path.join(self.TOFEL_book_file_path, "test"), "meaning.txt",
+        if (insert and (self.current_chapter is not None and self.current_chapter != "")):
+            self.file_io.writeVocabFile(self.full_chapter_path, "vocab.txt", self.content[0])
+            self.file_io.writeMeaningFile(self.full_chapter_path, "meaning.txt",
                                           self.content[1] + "\t" + self.content[2])
+            self.file_io.writeMeaningFile(self.full_chapter_path, "example.txt",
+                                          str(self.content[3]).replace("\n", "\t"))
+        else:
+            if self.notificationText:
+                self.notificationBox.setFixedSize(self.win_width - 20, 500)
+            else:
+                self.notificationText = QLabel()
+            self.notificationText.setText("You should select chapter in order to insert!!!!")
         for all in self.notificationBox.children():
             all.deleteLater()
         self.initializedNoti()

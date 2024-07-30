@@ -20,6 +20,10 @@ class MatchingGameWindow(QMainWindow):
         self.notion_call = notion.notion_API()
         self.setFixedSize(1500, 550)
         self.setContentsMargins(25, 5, 25, 5)
+        self.vocab_source_path = "vocab_source"
+        self.current_section = ""
+        self.current_chapter = ""
+        self.full_chapter_path = ""
         self.vocab_dict = {}
         self.pages_stackWidget = QStackedWidget()
         self.file_io = File_io.file_io()
@@ -87,24 +91,55 @@ class MatchingGameWindow(QMainWindow):
             page_index += 1
             self.Chapter_answer_list.extend(index_list)
         self.setCentralWidget(self.pages_stackWidget)
+
+    def delete_chapter_box(self):
+        print(self.select_chapter.count())
+        widgets = (self.select_chapter.itemAt(i).widget() for i in
+                   range(1, self.select_chapter.count()))
+        for widget in widgets:
+            self.select_chapter.removeWidget(widget)
+
     def sourceOnChanged(self, text):
         if (text == "-"):
+            self.delete_chapter_box()
             return
+        if (self.select_chapter.count() > 1):
+            self.delete_chapter_box()
+        # self.current_section = text
+        self.curr_section = os.path.join(self.sourceDir, text)
         chapter_box = QComboBox()
-        self.book_chapter_dir = os.path.join(self.sourceDir, text)
         chapter_box.addItem("-")
         # chapter_box.addItem("All")
-        for chapter in os.listdir(self.book_chapter_dir):
+        for chapter in os.listdir(self.curr_section):
             chapter_box.addItem(chapter)
         self.select_chapter.addWidget(chapter_box)
         chapter_box.activated[str].connect(self.chapterOnChanged)
 
+    # def chapterOnChanged(self, chapter):
+    #     if (chapter == "-"):
+    #         return
+    #     self.current_chapter = chapter
+    #     self.full_chapter_path = os.path.join(self.vocab_source_path, self.current_section, self.current_chapter)
+    #     print(self.full_chapter_path)
+
+    # def sourceOnChanged(self, text):
+    #     if (text == "-"):
+    #         return
+    #     chapter_box = QComboBox()
+    #     self.book_chapter_dir = os.path.join(self.sourceDir, text)
+    #     chapter_box.addItem("-")
+    #     # chapter_box.addItem("All")
+    #     for chapter in os.listdir(self.book_chapter_dir):
+    #         chapter_box.addItem(chapter)
+    #     self.select_chapter.addWidget(chapter_box)
+    #     chapter_box.activated[str].connect(self.chapterOnChanged)
+    # 
     def chapterOnChanged(self, chapter):
         if (chapter == "-"):
             return
         # if(chapter == "All"):
         #     self.vocab_files
-        self.vocab_files = os.path.join(self.book_chapter_dir, chapter)
+        self.vocab_files = os.path.join(self.curr_section, chapter)
         if(not self.confirmButtonSet):
             self.setConfirmButton()
             self.confirmButtonSet = True
