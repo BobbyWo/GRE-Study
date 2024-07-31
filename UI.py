@@ -27,7 +27,7 @@ class MyWindow(QMainWindow):
         self.current_section = ""
         self.current_chapter = ""
         self.full_chapter_path = ""
-        self.chapter_list = []
+        # self.section_list = []
         self.file_io = File_io.file_io()
         # self.kaplan_vocab_table_id = "0bc17826-0f8a-4497-bcf5-9923a205b314"
         # self.new_tofel_vocab_120_table_id = "70a74c01-2fc3-4eec-9420-4f08a37f2f3a"
@@ -61,10 +61,12 @@ class MyWindow(QMainWindow):
         self.current_section = text
         curr_section = os.path.join(self.vocab_source_path,self.current_section)
         
-        self.chapter_combo = QComboBox()
+        self.chapter_combo = UI_combo_box()
+        self.chapter_combo.popupAboutToBeShown.connect(self.init_chapter_combo)
         self.chapter_combo.addItem("-")
-        for chapter in os.listdir(curr_section):
-            self.chapter_combo.addItem(chapter)
+        self.section_list = os.listdir(curr_section)
+        # for chapter in os.listdir(curr_section):
+        #     self.chapter_combo.addItem(chapter)
         self.insert_chapter_layout.addWidget(self.chapter_combo)
         self.chapter_combo.activated[str].connect(self.chapterOnChanged)
 
@@ -84,9 +86,18 @@ class MyWindow(QMainWindow):
         self.section_combo.clear()
         self.section_combo.addItem("-")
         sourceDir = self.data["vocab_source_path"]
-        self.chapter_list = os.listdir(sourceDir)
-        self.section_combo.addItems(self.chapter_list)
+        self.section_list = os.listdir(sourceDir)
+        self.section_combo.addItems(self.section_list)
         self.section_combo.addItem("create_new_folder...")
+        print(self.section_list)
+        
+    def init_chapter_combo(self):
+        self.chapter_combo.clear()
+        self.chapter_combo.addItem("-")
+        sourceDir = os.path.join(self.data["vocab_source_path"],self.current_section)
+        self.chapter_list = os.listdir(sourceDir)
+        self.chapter_combo.addItems(self.chapter_list)
+        self.chapter_combo.addItem("create_new_folder...")
         print(self.chapter_list)
 
     def create_folder(self,file_name):
@@ -156,8 +167,8 @@ class MyWindow(QMainWindow):
 
         self.section_combo.addItem("-")
         sourceDir = self.data["vocab_source_path"]
-        self.chapter_list = os.listdir(sourceDir)
-        self.section_combo.addItems(self.chapter_list)
+        self.section_list = os.listdir(sourceDir)
+        self.section_combo.addItems(self.section_list)
         self.section_combo.activated[str].connect(self.sourceOnChanged)
         self.section_combo.addItem("create_new_folder...")
 
