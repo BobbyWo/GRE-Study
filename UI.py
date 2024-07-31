@@ -10,6 +10,8 @@ import pyperclip
 
 from Study_tools_functions import notion, cambridge_search, File_io
 from Study_tools_functions.Snip_window import SnipWidget
+from UI_File.combo_box.UI_combo_box import UI_combo_box
+from UI_File.window.create_folder_window import create_folder_window
 from UI_File.window.matching_game_window import MatchingGameWindow
 from UI_File.button.UI_button import UI_button
 
@@ -25,13 +27,8 @@ class MyWindow(QMainWindow):
         self.current_section = ""
         self.current_chapter = ""
         self.full_chapter_path = ""
+        self.chapter_list = []
         self.file_io = File_io.file_io()
-        self.kaplan_file_path = "vocab_source/GRE_kaplan_book"
-        self.Kaptest_file_path = "vocab_source/Kaptest_Vocab"
-        self.Quizlet_file_path = "vocab_source/Quizlet_Vocab"
-        self.TOFEL_book_file_path = "vocab_source/TOFEL_book_Vocab"
-        self.TOFEL_online_file_path = "vocab_source/TOEFL_Vocab"
-        self.TPO_book_file_path = "vocab_source/TPO_Book"
         # self.kaplan_vocab_table_id = "0bc17826-0f8a-4497-bcf5-9923a205b314"
         # self.new_tofel_vocab_120_table_id = "70a74c01-2fc3-4eec-9420-4f08a37f2f3a"
         f = open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "config.json"))
@@ -39,7 +36,7 @@ class MyWindow(QMainWindow):
         self.Notion_call_enabled = self.data["Notion_call_enabled"] == 'Y'
         # self.setGeometry(50, 50, self.win_width, self.win_height)
         self.setWindowTitle("GRE study tools")
-        self.dict_search = cambridge_search.cambridge_search()
+        # self.dict_search = cambridge_search.cambridge_search()
         if self.Notion_call_enabled:
             self.notion_call = notion.notion_API()
         self.initUI()
@@ -56,25 +53,54 @@ class MyWindow(QMainWindow):
             return
         if(self.insert_chapter_layout.count() >1):
             self.delete_chapter_box()
+        if(text == "create_new_folder..."):
+            self.create_window = create_folder_window()
+            self.create_window.show()
+            self.create_window.file_name.connect(self.create_folder)
+            return
         self.current_section = text
         curr_section = os.path.join(self.vocab_source_path,self.current_section)
-        chapter_box = QComboBox()
-        chapter_box.addItem("-")
-        # chapter_box.addItem("All")
+        
+        self.chapter_combo = QComboBox()
+        self.chapter_combo.addItem("-")
         for chapter in os.listdir(curr_section):
-            chapter_box.addItem(chapter)
-        self.insert_chapter_layout.addWidget(chapter_box)
-        chapter_box.activated[str].connect(self.chapterOnChanged)
+            self.chapter_combo.addItem(chapter)
+        self.insert_chapter_layout.addWidget(self.chapter_combo)
+        self.chapter_combo.activated[str].connect(self.chapterOnChanged)
 
     def chapterOnChanged(self,chapter):
         if(chapter == "-"):
+            return
+        if(chapter == "create_new_folder..."):
+            self.create_window = create_folder_window()
+            self.create_window.show()
+            self.create_window.file_name.connect(self.create_folder)
             return
         self.current_chapter = chapter
         self.full_chapter_path = os.path.join(self.vocab_source_path,self.current_section,self.current_chapter)
         print(self.full_chapter_path)
 
-    def initUI(self):
+    def init_section_combo(self):
+        self.section_combo.clear()
+        self.section_combo.addItem("-")
+        sourceDir = self.data["vocab_source_path"]
+        self.chapter_list = os.listdir(sourceDir)
+        self.section_combo.addItems(self.chapter_list)
+        self.section_combo.addItem("create_new_folder...")
+        print(self.chapter_list)
 
+    def create_folder(self,file_name):
+        if(file_name == "" or file_name == "-"):
+            return
+        create_folder_path = ""
+        if(self.current_section == "" or self.current_section == "-"):
+            create_folder_path = os.path.join(self.vocab_source_path)
+        else:
+            create_folder_path = os.path.join(self.vocab_source_path,self.current_section)
+        self.file_io.create_folder(create_folder_path,file_name)
+        return file_name
+
+    def initUI(self):
         GRE_layout = self.init_GRE_layout()
         self.insert_chapter_layout = self.init_insert_chapter_layout()
         search_word_layout = self.init_search_word_layout()
@@ -124,13 +150,18 @@ class MyWindow(QMainWindow):
     def init_insert_chapter_layout(self):
         insert_chapter_layout = QHBoxLayout()
         insert_chapter_layout.setContentsMargins(self.horizontal_margin, self.vertical_margin, self.horizontal_margin,0)
-        self.combo = QComboBox()
-        self.combo.addItem("-")
+
+        self.section_combo = UI_combo_box()
+        self.section_combo.popupAboutToBeShown.connect(self.init_section_combo)
+
+        self.section_combo.addItem("-")
         sourceDir = self.data["vocab_source_path"]
-        for source in os.listdir(sourceDir):
-            self.combo.addItem(source)
-        self.combo.activated[str].connect(self.sourceOnChanged)
-        insert_chapter_layout.addWidget(self.combo)
+        self.chapter_list = os.listdir(sourceDir)
+        self.section_combo.addItems(self.chapter_list)
+        self.section_combo.activated[str].connect(self.sourceOnChanged)
+        self.section_combo.addItem("create_new_folder...")
+
+        insert_chapter_layout.addWidget(self.section_combo)
         return insert_chapter_layout
 
     def init_search_word_layout(self):
@@ -322,10 +353,10 @@ class MyWindow(QMainWindow):
         self.notificationText.move(20, 155)
         self.notificationText.adjustSize()
 
-    def define_notif_text(self, msg):
-        print('notification was sent')
-        self.notificationText.setText('notification was sent')
-        self.update_notif()
+    # def define_notif_text(self, msg):
+    #     print('notification was sent')
+    #     self.notificationText.setText('notification was sent')
+    #     self.update_notif()
 
 
 def window():
