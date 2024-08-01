@@ -34,7 +34,6 @@ class MyWindow(QMainWindow):
         f = open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "config.json"))
         self.data = json.load(f)
         self.Notion_call_enabled = self.data["Notion_call_enabled"] == 'Y'
-        # self.setGeometry(50, 50, self.win_width, self.win_height)
         self.setWindowTitle("GRE study tools")
         # self.dict_search = cambridge_search.cambridge_search()
         if self.Notion_call_enabled:
