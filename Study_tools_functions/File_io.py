@@ -16,6 +16,17 @@ class file_io():
             f.close()
         return vocab_list
 
+    def readSelectedVocabFile(self,file_path):
+        vocab_list = []
+        with open(file_path,encoding='utf-8') as f:
+            lines = f.read()
+            words = lines.split("\n")
+            if(words.__contains__('')):
+                words.remove('')
+            vocab_list.extend(words)
+            f.close()
+        return vocab_list
+
     def readMeaningfile(self,file_path):
         vocab_list = []
         with open(file_path,encoding="utf-8") as f:
@@ -72,6 +83,19 @@ class file_io():
                     vocab_list.extend(words)
 
     def writeVocabFile(self,file_path,file_name,content):
+        content = str(content).replace("\n","\t")
+        file_path = os.path.join(file_path,file_name)
+        file_exists = os.path.exists(file_path)
+        if(not file_exists):
+            with open(file_path,'w', encoding="utf-8") as f:
+                f.writelines(content + "\n")
+                f.close()
+        else:
+            with open(file_path, 'a', encoding="utf-8") as f:
+                f.writelines(content + "\n")
+                f.close()
+
+    def writeSelectedVocabFile(self,file_path,file_name,content):
         content = str(content).replace("\n","\t")
         file_path = os.path.join(file_path,file_name)
         file_exists = os.path.exists(file_path)

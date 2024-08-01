@@ -128,7 +128,7 @@ class Ui_MainWindow(QMainWindow):
             self.buttonBox.setObjectName("buttonBox")
 
     def YesButtonClicked(self):
-        from UI_File.window.matching_game_window import MatchingGameWindow
+        from matching_game_window import MatchingGameWindow
         self.matching_game = MatchingGameWindow()
         self.matching_game.show()
         self.deleteLater()

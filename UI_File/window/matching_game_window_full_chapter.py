@@ -47,7 +47,8 @@ class MatchingGameWindow(QMainWindow):
         data = json.load(f)
         self.sourceDir = data["vocab_source_path"]
         for source in os.listdir(self.sourceDir):
-            self.combo.addItem(source)
+            if(source == "full_chapter"):
+                self.combo.addItem(source)
         self.combo.activated[str].connect(self.sourceOnChanged)
         self.select_chapter.addWidget(self.combo)
 
@@ -68,6 +69,9 @@ class MatchingGameWindow(QMainWindow):
             # get vocab example
             if (vocab_file.__contains__("example")):
                 example_file_path = os.path.join(self.vocab_files, vocab_file)
+            # get selected vocab example
+            if (vocab_file.__contains__("selected")):
+                selected_vocab_file_path = os.path.join(self.vocab_files, vocab_file)
 
         if (word_file_path):
             self.word_list = self.file_io.readVocabFile(word_file_path)
@@ -75,13 +79,22 @@ class MatchingGameWindow(QMainWindow):
             self.meaning_list = self.file_io.readMeaningfile(meaning_file_path)
         if (example_file_path):
             self.example_list = self.file_io.readExampleFile(example_file_path)
+        if (selected_vocab_file_path):
+            self.selected_vocab_list = self.file_io.readExampleFile(selected_vocab_file_path)
 
-        # for index, word in enumerate(self.word_list):
-        #     self.vocab_dict[word] = self.meaning_list[index]
-        shuffled_words = random.sample(self.word_list, len(self.word_list))
+        random_list = random.choices([self.word_list,self.selected_vocab_list],[0.75,0.25],k=4)
+        self.random_words = []
+        for word in random_list:
+            if word is not None and word != []:
+                self.random_words.extend(random.sample(word,5))
+
+        shuffled_words = []
+        shuffled_words.extend(self.random_words)
+        # shuffled_words = random.sample(self.word_list, len(self.word_list))
         page_index = 0
         self.Chapter_answer_list = []
-        self.Chapter_user_answer_list = [-1] * len(self.word_list)
+        # self.Chapter_user_answer_list = [-1] * len(self.word_list)
+        self.Chapter_user_answer_list = [-1] * len(shuffled_words)
         self.Chapter_answer_box_list = []
         while(len(shuffled_words)>0):
             if(len(shuffled_words) >= 5):
@@ -254,7 +267,7 @@ class MatchingGameWindow(QMainWindow):
         next_button.clicked.connect(lambda checked,page_index=page_index:self.nextButtonClicked(page_index))
         button_layout.addWidget(next_button)
         page_index+= 1
-        if( page_index == math.ceil(len(self.word_list)/5)):
+        if( page_index == math.ceil(len(self.random_words)/5)):
             submit_button = QPushButton("Submit")
             submit_button.clicked.connect(self.submitButtonClicked)
             button_layout.addWidget(submit_button)
@@ -308,6 +321,9 @@ class MatchingGameWindow(QMainWindow):
             else:
                 wrongAns_List.append("you did not answered this question!!!!!!!!")
         result_marks = (marks/len(self.Chapter_user_answer_list))*100
+        words_set = list(set(self.random_words)-set(self.selected_vocab_list))
+        for word in words_set:
+            self.file_io.writeSelectedVocabFile(self.vocab_files, "selected.txt", word)
         self.result_window = Ui_MainWindow(result_marks, words, wrongAns_List, correctAns_List,answer_correct)
         self.result_window.show()
         # self.file_io.write_file(self.vocab_files,"marks.txt",str(result_marks))

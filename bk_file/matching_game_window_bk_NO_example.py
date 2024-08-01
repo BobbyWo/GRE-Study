@@ -43,7 +43,7 @@ class MatchingGameWindow(QMainWindow):
         self.select_chapter = QHBoxLayout()
         self.combo = QComboBox()
         self.combo.addItem("-")
-        f = open(os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.realpath(__file__)))), "config.json"))
+        f = open(os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__file__))), "config.json"))
         data = json.load(f)
         self.sourceDir = data["vocab_source_path"]
         for source in os.listdir(self.sourceDir):
@@ -93,15 +93,11 @@ class MatchingGameWindow(QMainWindow):
 
     def delete_chapter_box(self):
         print(self.select_chapter.count())
-        # widgets = (self.select_chapter.itemAt(i).widget() for i in
-        #            range(1, self.select_chapter.count()))
-        widgets = []
-        for i in range(1,self.select_chapter.count()):
-            widgets.append(self.select_chapter.itemAt(i).widget())
-        # print(widgets)
+        widgets = (self.select_chapter.itemAt(i).widget() for i in
+                   range(1, self.select_chapter.count()))
         for widget in widgets:
             self.select_chapter.removeWidget(widget)
-        self.confirmButtonSet = False
+
     def sourceOnChanged(self, text):
         if (text == "-"):
             self.delete_chapter_box()
