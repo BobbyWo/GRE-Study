@@ -57,6 +57,20 @@ class cambridge_search():
         search_box = self.driver.find_element(By.XPATH, "//*[@id='searchword']")
         search_box.clear()
         search_box.send_keys(search_word)
+        try:
+            english_chinese = self.driver.find_element(By.CLASS_NAME,"bw.lb0.lp-10.lpt-5.lpb-5.lmr-10.lml-0.cdo-dataset-selector.lpl-0")
+        except:
+            pass
+        try:
+            english_1 = self.driver.find_element(By.CLASS_NAME,"bw.lb0.lp-10.lpt-5.lpb-5.lmr-10.lml-0.cdo-dataset-selector.lbl")
+            if(english_1):
+                english_1.click()
+                time.sleep(2)
+                english_chinese_select = self.driver.find_elements(By.CLASS_NAME, "hp.hdb.lmb-5.hp")
+                if(english_chinese_select):
+                    english_chinese_select[0].click()
+        except:
+            pass
         search_button = self.driver.find_element(By.CLASS_NAME, "bo.iwc.iwc-40.hao.lb0.cdo-search-button.lp-0")
         search_button.click()
         word_dict_search = ""
@@ -73,7 +87,7 @@ class cambridge_search():
                     try:
                         word_dict_search += words[index].text + "\n"
                     except:
-                        time.sleep(1)
+                        time.sleep(3)
                         word_dict_search += words[index].text + "\n"
                     word_dict_search += "({0})".format(pos[index].text) + "\n"
                     english_meaning = mean.find_element(By.CLASS_NAME, "def.ddef_d.db").text

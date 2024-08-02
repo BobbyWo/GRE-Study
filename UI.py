@@ -257,19 +257,76 @@ class MyWindow(QMainWindow):
         self.matching_game.show()
 
     def insertIntoTable(self):
-        self.Question_Vocab_Search_Button_clicked(insert=True)
-        if (len(self.content_list) == 0):
-            return
-        if (not self.hasChoice and (self.current_chapter is not None and self.current_chapter != "")):
-            if self.Notion_call_enabled:
-                self.notion_call.insert_table_row(self.content)
-            self.file_io.writeVocabFile(self.full_chapter_path, "vocab.txt", self.content[0])
-            self.file_io.writeMeaningFile(self.full_chapter_path, "meaning.txt",
-                                          self.content[1] + "\t" + self.content[2])
-            self.file_io.writeMeaningFile(self.full_chapter_path, "example.txt",
-                                          self.content[3])
-        else:
-            self.notificationText.setText("You should select chapter in order to insert!!!!")
+        words_list = [
+ ['internecine', 'thespian', 'itinerary', 'effrontery', 'inadvertently', 'prodigal', 'ramification', 'nonplus',
+  'apogee', 'incorporate', 'canon', 'extrinsic', 'coagulate', 'preamble', 'fallacious', 'daunt', 'impassive', 'evince',
+  'hermetic', 'diffuse'],
+ ['libertine', 'brazen', 'implicit', 'obsequious', 'ingenuous', 'sordid', 'striated', 'variegated', 'somatic',
+  'fractious', 'imbroglio', 'gustatory', 'equable', 'propitiate', 'misogynist', 'impair', 'extrapolation', 'histrionic',
+  'onerous', 'discrepancy'],
+ ['modicum', 'truculence', 'intangible', 'reparation', 'terrestrial', 'herbivorous', 'riposte', 'expiate', 'reproach',
+  'loquacious', 'quorum', 'artless', 'insuperable', 'propriety', 'gossamer', 'vacillate', 'alloy', 'impute', 'renege',
+  'arduous'],
+ ['beatify', 'bacchanalian', 'perigee', 'defunct', 'incongruity', 'placate', 'Machiavellian', 'tacit', 'forbearance',
+  'whimsical', 'stratified', 'facetious', 'miscellany', 'pedantic', 'quiescent', 'centrifugal', 'unfeigned', 'pique',
+  'archeology', 'venal'],
+ ['exorcise', 'refute', 'behemoth', 'disparate', 'euphemism', 'turgid', 'ephemeral', 'laud', 'visage', 'specious',
+  'juxtapose', 'contentious', 'ambrosia', 'flux', 'immutable', 'circuitous', 'servile', 'stolid', 'buttress',
+  'punctilious'],
+ ['fulminate', 'tangential', 'divest', 'salacious', 'platonic', 'iconoclastic', 'soliloquy', 'spendthrift',
+  'inconsequential', 'malign', 'extraneous', 'innocuous', 'tenuous', 'vitiate', 'reverent', 'compliant', 'prattle',
+  'misanthrope', 'mettle', 'warranted'],
+ ['audacious', 'bard', 'supplicant', 'mundane', 'mendicant', 'invidious', 'florid', 'miscreant', 'alacrity',
+  'peremptory', 'savor', 'stigma', 'axiomatic', 'geniality', 'limpid', 'satyr', 'untoward', 'equanimity', 'clamor',
+  'repine'],
+ ['convoluted', 'prate', 'salutary', 'adjunct', 'undulating', 'pervasive', 'appropriate', 'appellation', 'sensual',
+  'impecunious', 'engender', 'avuncular', 'chicanery', 'occlude', 'tautology', 'squalor', 'extant', 'delineate',
+  'halcyon', 'flout'],
+ ['churlish', 'fledgling', 'plutocracy', 'fauna', 'subside', 'pragmatic', 'exacerbate', 'encomium', 'cozen', 'rescind',
+  'vindictive', 'sidereal', 'capricious', 'derivative', 'implacable', 'tremulous', 'prohibitive', 'phoenix', 'deride',
+  'oligarchy'],
+ ['fidelity', 'metamorphosis', 'oscillate', 'spectrum', 'ornithologist', 'juggernaut', 'adulterate', 'etymology',
+  'allure', 'recant', 'wary', 'paragon', 'malinger', 'antipathy', 'anachronism', 'refractory', 'craven', 'forswear',
+  'interpolate', 'feral'],
+ ['disjointed', 'euphoria', 'carping', 'malleable', 'formidable', 'bedizen', 'onomatopoeia', 'seismic', 'abstemious',
+  'banal', 'gullible', 'staccato', 'salubrious', 'conquette', '']]
+        # words_list = [['indeterminate', 'convex', 'lucid', 'presumptuous', 'subsume', 'discredit', 'dogmatic', 'preternatural', 'tractable', 'jaundiced', 'talisman', 'gregarious', 'solvent', 'epistemology', 'codify', 'jibe', 'schematic', 'assuage', 'substantive', 'anodyne'], ['minatory', 'mitigate', 'suffrage', 'amulet', 'presage', 'emulate', 'morose', 'qualm', 'garrulous', 'accretion', 'simile', 'perfidious', 'apprise', 'vaunt', 'gouge', 'minutia', 'remonstrate', 'officious', 'congenial', 'viscous'], ['bovine', 'stultify', 'maelstrom', 'froward', 'expository', 'esoteric', 'rarefied', 'felicitous', 'cloister', 'distill', 'incarnate', 'subversive', 'reprise', 'discerning', 'foment', 'lassitude', 'supine', 'avocation', 'recluse', 'fetid'], ['anomalous', 'paucity', 'eulogy', 'sardonic', 'discordant', 'homily', 'transgression', 'demotic', 'saturnine', 'cognizant', 'default', 'phlegmatic', 'complaisant', 'ardor', 'laconic', 'essay', 'contend', 'ostentatious', 'recalcitrant', 'digression'], ['dismiss', 'hyperbole', 'credence', 'condone', 'fetter', 'indigence', 'flourish', 'diaphanous', 'untenable', 'incursion', 'impinge', 'dissident', 'insensible', 'perturb', 'travesty', 'boorish', 'covert', 'torpor', 'disingenuous', 'stipulate'], ['resolution', 'apropos', 'transient', 'adaptive', 'hirsute', 'bifurcate', 'hallowed', 'arabesque', 'stupefy', 'connoisseur', 'solicitous', 'carnal', 'gainsay', 'plummet', 'Elysian', 'propensity', 'sedition', 'futile', 'amenable', 'factotum'], ['dross', 'volatile', 'vertigo', 'paleontology', 'cadge', 'provident', 'lilliputian', 'sanction', 'discrete', 'erudite', 'cataclysm', 'denouement', 'emaciated', 'indolent', 'precipitate', 'captious', 'inchoate', 'analogous', 'blandishment', 'jocose'], ['bombastic', 'liberal', 'caucus', 'explicate', 'apothegm', 'singular', 'frugality', 'detraction', 'igneous', 'pungent', 'discomfit', 'pristine', 'desuetude', 'forestall', 'commensurate', 'impervious', 'callous', 'rue', 'exculpate', 'concave'], ['effervescence', 'artifact', 'profound', 'resolve', 'intransigence', 'stint', 'pathological', 'tortuous', 'syllogism', 'tirade', 'conundrum', 'sylvan', 'rail', 'probity', 'heterodox', 'compendium', 'imperturbable', 'sodden', 'supplant', 'complement'], ['veracious', 'doctrinaire', 'fiat', 'frieze', 'piquant', 'treatise', 'analgesic', 'piety', 'zealot', 'abject', 'inert', 'continence', 'reticent', 'champion', 'latent', 'neologism', 'gerrymander', 'junta', 'bawdy', 'enunciate'], ['obdurate', 'interregnum', 'dissolution', 'penchant', 'protagonist', 'perfunctory', 'clique', 'impede', 'reprobate', 'invective', 'distend', 'adament', 'decorum', 'flora', 'lethargic', 'disseminate', 'causal', 'limn', 'endemic', 'debauchery'], ['internecine', 'thespian', 'itinerary', 'effrontery', 'inadvertently', 'prodigal', 'ramification', 'nonplus', 'apogee', 'incorporate', 'canon', 'extrinsic', 'coagulate', 'preamble', 'fallacious', 'daunt', 'impassive', 'evince', 'hermetic', 'diffuse'], ['libertine', 'brazen', 'implicit', 'obsequious', 'ingenuous', 'sordid', 'striated', 'variegated', 'somatic', 'fractious', 'imbroglio', 'gustatory', 'equable', 'propitiate', 'misogynist', 'impair', 'extrapolation', 'histrionic', 'onerous', 'discrepancy'], ['modicum', 'truculence', 'intangible', 'reparation', 'terrestrial', 'herbivorous', 'riposte', 'expiate', 'reproach', 'loquacious', 'quorum', 'artless', 'insuperable', 'propriety', 'gossamer', 'vacillate', 'alloy', 'impute', 'renege', 'arduous'], ['beatify', 'bacchanalian', 'perigee', 'defunct', 'incongruity', 'placate', 'Machiavellian', 'tacit', 'forbearance', 'whimsical', 'stratified', 'facetious', 'miscellany', 'pedantic', 'quiescent', 'centrifugal', 'unfeigned', 'pique', 'archeology', 'venal'], ['exorcise', 'refute', 'behemoth', 'disparate', 'euphemism', 'turgid', 'ephemeral', 'laud', 'visage', 'specious', 'juxtapose', 'contentious', 'ambrosia', 'flux', 'immutable', 'circuitous', 'servile', 'stolid', 'buttress', 'punctilious'], ['fulminate', 'tangential', 'divest', 'salacious', 'platonic', 'iconoclastic', 'soliloquy', 'spendthrift', 'inconsequential', 'malign', 'extraneous', 'innocuous', 'tenuous', 'vitiate', 'reverent', 'compliant', 'prattle', 'misanthrope', 'mettle', 'warranted'], ['audacious', 'bard', 'supplicant', 'mundane', 'mendicant', 'invidious', 'florid', 'miscreant', 'alacrity', 'peremptory', 'savor', 'stigma', 'axiomatic', 'geniality', 'limpid', 'satyr', 'untoward', 'equanimity', 'clamor', 'repine'], ['convoluted', 'prate', 'salutary', 'adjunct', 'undulating', 'pervasive', 'appropriate', 'appellation', 'sensual', 'impecunious', 'engender', 'avuncular', 'chicanery', 'occlude', 'tautology', 'squalor', 'extant', 'delineate', 'halcyon', 'flout'], ['churlish', 'fledgling', 'plutocracy', 'fauna', 'subside', 'pragmatic', 'exacerbate', 'encomium', 'cozen', 'rescind', 'vindictive', 'sidereal', 'capricious', 'derivative', 'implacable', 'tremulous', 'prohibitive', 'phoenix', 'deride', 'oligarchy'], ['fidelity', 'metamorphosis', 'oscillate', 'spectrum', 'ornithologist', 'juggernaut', 'adulterate', 'etymology', 'allure', 'recant', 'wary', 'paragon', 'malinger', 'antipathy', 'anachronism', 'refractory', 'craven', 'forswear', 'interpolate', 'feral'], ['disjointed', 'euphoria', 'carping', 'malleable', 'formidable', 'bedizen', 'onomatopoeia', 'seismic', 'abstemious', 'banal', 'gullible', 'staccato', 'salubrious', 'conquette', '']]
+        # words_list = [["avocation"]]
+        curr_chap = 30
+        for i,words in enumerate(words_list):
+            self.full_chapter_path = os.path.join(self.vocab_source_path, self.current_section, f"Section_{i+curr_chap}")
+            self.current_chapter = f"Section_{i+curr_chap}"
+            print("-------------------------------------------------------------------------------------------------------------------\n")
+            print( f"Section_{i+curr_chap}")
+            for word in words:
+                self.searchWord.setText(word)
+                if(self.Question_Vocab_Search_Button_clicked(insert=True) == -1):
+                    continue
+                if (len(self.content_list) == 0):
+                    return
+                if (not self.hasChoice and (self.current_chapter is not None and self.current_chapter != "")):
+                    if self.Notion_call_enabled:
+                        self.notion_call.insert_table_row(self.content)
+                    self.file_io.writeVocabFile(self.full_chapter_path, "vocab.txt", self.content[0])
+                    self.file_io.writeMeaningFile(self.full_chapter_path, "meaning.txt",
+                                                  self.content[1] + "\t" + self.content[2])
+                    self.file_io.writeMeaningFile(self.full_chapter_path, "example.txt",
+                                                  self.content[3].replace("\n",""))
+            print("-------------------------------------------------------------------------------------------------------------------\n")
+    # def insertIntoTable(self):
+    #     self.Question_Vocab_Search_Button_clicked(insert=True)
+    #     if (len(self.content_list) == 0):
+    #         return
+    #     if (not self.hasChoice and (self.current_chapter is not None and self.current_chapter != "")):
+    #         if self.Notion_call_enabled:
+    #             self.notion_call.insert_table_row(self.content)
+    #         self.file_io.writeVocabFile(self.full_chapter_path, "vocab.txt", self.content[0])
+    #         self.file_io.writeMeaningFile(self.full_chapter_path, "meaning.txt",
+    #                                       self.content[1] + "\t" + self.content[2])
+    #         self.file_io.writeMeaningFile(self.full_chapter_path, "example.txt",
+    #                                       self.content[3].replace("\n",""))
+    #     else:
+    #         self.notificationText.setText("You should select chapter in order to insert!!!!")
 
     def Question_Vocab_Search_Button_clicked(self, insert=False):
         search_word = self.searchWord.text()
