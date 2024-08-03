@@ -35,7 +35,7 @@ class MyWindow(QMainWindow):
         self.data = json.load(f)
         self.Notion_call_enabled = self.data["Notion_call_enabled"] == 'Y'
         self.setWindowTitle("GRE study tools")
-        # self.dict_search = cambridge_search.cambridge_search()
+        self.dict_search = cambridge_search.cambridge_search()
         if self.Notion_call_enabled:
             self.notion_call = notion.notion_API()
         self.initUI()
