@@ -65,9 +65,12 @@ class cambridge_search():
             english_1 = self.driver.find_element(By.CLASS_NAME,"bw.lb0.lp-10.lpt-5.lpb-5.lmr-10.lml-0.cdo-dataset-selector.lbl")
             if(english_1):
                 english_1.click()
+                time.sleep(2)
                 english_chinese_select = self.driver.find_elements(By.CLASS_NAME, "hp.hdb.lmb-5.hp")
                 if(english_chinese_select):
-                    english_chinese_select[0].click()
+                    for x in english_chinese_select:
+                        if(x.text.strip() == '''English–Chinese (Traditional)'''.strip()):
+                            x.click()
         except:
             pass
         search_button = self.driver.find_element(By.CLASS_NAME, "bo.iwc.iwc-40.hao.lb0.cdo-search-button.lp-0")
@@ -113,9 +116,9 @@ class cambridge_search():
             chromedriver_path = os.path.join(sys._MEIPASS,"chromedriver.exe")
             driver = webdriver.Chrome(chromedriver_path)
         else:
-            f = open(os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__file__))), "config.json"))
-            data = json.load(f)
-            chrome_driver_path = data["chrome_driver_path"]
-            driver = webdriver.Chrome(chrome_driver_path)
-            # driver = webdriver.Chrome()
+            # f = open(os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__file__))), "config.json"))
+            # data = json.load(f)
+            # chrome_driver_path = data["chrome_driver_path"]
+            # driver = webdriver.Chrome(chrome_driver_path)
+            driver = webdriver.Chrome()
         return driver
