@@ -289,7 +289,7 @@ class MyWindow(QMainWindow):
             self.file_io.writeMeaningFile(self.full_chapter_path, "meaning.txt",
                                           self.content[1] + "\t" + self.content[2])
             self.file_io.writeMeaningFile(self.full_chapter_path, "example.txt",
-                                          self.content[3].replace("\n",""))
+                                          self.content[3].replace("\n","\t"))
         else:
             self.notificationText.setText("You should select chapter in order to insert!!!!")
 
