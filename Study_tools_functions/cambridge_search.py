@@ -57,6 +57,19 @@ class cambridge_search():
         search_box = self.driver.find_element(By.XPATH, "//*[@id='searchword']")
         search_box.clear()
         search_box.send_keys(search_word)
+        try:
+            english_chinese = self.driver.find_element(By.CLASS_NAME,"bw.lb0.lp-10.lpt-5.lpb-5.lmr-10.lml-0.cdo-dataset-selector.lpl-0")
+        except:
+            pass
+        try:
+            english_1 = self.driver.find_element(By.CLASS_NAME,"bw.lb0.lp-10.lpt-5.lpb-5.lmr-10.lml-0.cdo-dataset-selector.lbl")
+            if(english_1):
+                english_1.click()
+                english_chinese_select = self.driver.find_elements(By.CLASS_NAME, "hp.hdb.lmb-5.hp")
+                if(english_chinese_select):
+                    english_chinese_select[0].click()
+        except:
+            pass
         search_button = self.driver.find_element(By.CLASS_NAME, "bo.iwc.iwc-40.hao.lb0.cdo-search-button.lp-0")
         search_button.click()
         word_dict_search = ""
@@ -102,7 +115,7 @@ class cambridge_search():
         else:
             f = open(os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__file__))), "config.json"))
             data = json.load(f)
-            # chrome_driver_path = data["chrome_driver_path"]
-            # driver = webdriver.Chrome(chrome_driver_path)
-            driver = webdriver.Chrome()
+            chrome_driver_path = data["chrome_driver_path"]
+            driver = webdriver.Chrome(chrome_driver_path)
+            # driver = webdriver.Chrome()
         return driver
