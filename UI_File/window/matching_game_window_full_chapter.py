@@ -82,7 +82,14 @@ class MatchingGameWindowFullChapter(QMainWindow):
         if (selected_vocab_file_path):
             self.selected_vocab_list = self.file_io.readExampleFile(selected_vocab_file_path)
 
-        random_list = random.choices([self.word_list,self.selected_vocab_list],[0.75,0.25],k=4)
+        self.removed_dup_word_list = list(set(self.word_list) - set(self.selected_vocab_list))
+
+        random_list = random.choices([self.removed_dup_word_list,self.selected_vocab_list],[0.9,0.1],k=4)
+        for i,selected_list in enumerate(random_list):
+            if(len(selected_list) == len(self.selected_vocab_list)):
+                print(f"{i} : from selected")
+            else:
+                print(f"{i} : from vocab_list")
         self.random_words = []
         for word in random_list:
             if word is not None and word != []:
@@ -243,7 +250,6 @@ class MatchingGameWindowFullChapter(QMainWindow):
         example_layout = QHBoxLayout()
         self.answer_list = []
         for index, word_index in enumerate(index_list):
-            print(example_list[word_index])
             item = QLabel("Example:\n" + example_list[word_index].replace("\t","\n"))
             # item.posChanged.connect(self.checkCoverage)
             item.setWordWrap(True)
