@@ -1,392 +1,112 @@
-# string = '''apathy
-# zeal
-# loathing
-# cheerful
-# antagonism
-# delight
-# astonishment
-# dismay
-# sojourning
-# retiring
-# persevering
-# euphoria
-# composure
-# apprehension
-# economized
-# escalated
-# elaborated
-# congruent
-# confiscatory
-# consummate
-# whim
-# dogma
-# hypothesis
-# fancy
-# tenet
-# polity
-# spurious
-# terse
-# fallacious
-# succinct
-# bellicose
-# blithe
-# extol
-# deprecate
-# renounce
-# spurn
-# discountenance
-# eulogize'''
-#
-#
-# a = string.split("\n")
-# chunks = [a[i:i+20] for i in range(0,len(a),20)]
-# print(chunks)
 import os
 from pprint import pprint
 
 from Study_tools_functions import File_io
-
-word_list = []
-file_io = File_io.file_io()
-path = "C:\\Users\\two\\Documents\\GRE-Study\\vocab_source\\GRE_kaplan_book"
-path_2 = "C:\\Users\\two\\Documents\\GRE-Study\\vocab_source\\GRE_kaplan_book_24-25"
-
-a = '''
-                                            English–Chinese (Traditional)
-                                        '''.strip()
-print(a)
-# for x in range(1,21):
-#  os.mkdir(os.path.join(path_2,f"Section_{x}"))
-# for x in os.listdir(path):
-#     path_1 = os.path.join(path,x,"vocab.txt")
-#     word_list.extend(file_io.readVocabFile(path_1))
 #
-# word_chapter = [word_list[i:i+20] for i in range(0,len(word_list),20)]
-# pprint(word_chapter)
+# word_list = []
+# file_io = File_io.file_io()
+# path = "C:\\Users\\two\\Documents\\GRE-Study\\vocab_source\\GRE_kaplan_book"
+# path_2 = "C:\\Users\\two\\Documents\\GRE-Study\\vocab_source\\GRE_kaplan_book_24-25"
+# print(a)
 
-
-
-
+# full_chapter_vocab = []
+# full_chapter_meaning = []
+# full_chapter_example = []
 #
-# [['apathy',
-#   'zeal',
-#   'loathing',
-#   'cheerful',
-#   'antagonism',
-#   'delight',
-#   'astonishment',
-#   'dismay',
-#   'sojourning',
-#   'retiring',
-#   'persevering',
-#   'euphoria',
-#   'composure',
-#   'apprehension',
-#   'economized',
-#   'escalated',
-#   'elaborated',
-#   'congruent',
-#   'confiscatory',
-#   'consummate'],
-#  ['whim',
-#   'dogma',
-#   'hypothesis',
-#   'fancy',
-#   'tenet',
-#   'polity',
-#   'spurious',
-#   'terse',
-#   'fallacious',
-#   'succinct',
-#   'bellicose',
-#   'blithe',
-#   'extol',
-#   'deprecate',
-#   'renounce',
-#   'spurn',
-#   'discountenance',
-#   'eulogize',
-#   'bewildering',
-#   'surprising'],
-#  ['inviting',
-#   'misguided',
-#   'uncoordinated',
-#   'encouraging',
-#   'minimal',
-#   'exciting',
-#   'misleading',
-#   'exorbitant',
-#   'fathom',
-#   'interpolate',
-#   'explore',
-#   'elevating',
-#   'dominating',
-#   'floundering',
-#   'apogee',
-#   'epiphany',
-#   'impasse',
-#   'capitulate',
-#   'regress',
-#   'impugn'],
-#  ['acrimony',
-#   'cacophony',
-#   'sinecure',
-#   'impede',
-#   'replicate',
-#   'outweigh',
-#   'substantial',
-#   'paltry',
-#   'abhorrent',
-#   'meaningful',
-#   'elusive',
-#   'popular',
-#   'expensive',
-#   'profitable',
-#   'desultory',
-#   'parsimonious',
-#   'truculent',
-#   'breach',
-#   'circumnavigate',
-#   'circumvent'],
-#  ['adversary',
-#   'sojourners',
-#   'occupant',
-#   'discretionary',
-#   'sacrosanct',
-#   'injudicious',
-#   'postulate',
-#   'refute',
-#   'overlook',
-#   'embryonic',
-#   'pestilential',
-#   'subterranean',
-#   'boycott',
-#   'bolster',
-#   'annex',
-#   'enmity',
-#   'approbation',
-#   'largesse',
-#   'galvanize',
-#   'abide'],
-#  ['repudiate',
-#   'despair',
-#   'duress',
-#   'ebullience',
-#   'orator',
-#   'miscreant',
-#   'interloper',
-#   'inscrutable',
-#   'mercenary',
-#   'draconian',
-#   'intermittent',
-#   'insipid',
-#   'legitimate',
-#   'prolocutor',
-#   'despot',
-#   'figurehead',
-#   'indifferent',
-#   'cognizant',
-#   'partial',
-#   'phlegmatic'],
-#  ['conciliatory',
-#   'cantankerous',
-#   'inscrutable',
-#   'trivial',
-#   'contentious',
-#   'indifferent',
-#   'charming',
-#   'volatile',
-#   'courageous',
-#   'virtuous',
-#   'ignoble',
-#   'guarantee',
-#   'precarious',
-#   'facetious',
-#   'detractors',
-#   'neophytes',
-#   'the cognoscenti',
-#   'connoisseurs',
-#   'malcontents',
-#   'the uninitiated'],
-#  ['seminal',
-#   'derivative',
-#   'uninspired',
-#   'canonical',
-#   'serial',
-#   'antithetical',
-#   'insincerity',
-#   'frankness',
-#   'falsehoods',
-#   'candor',
-#   'inexperience',
-#   'hesitation',
-#   'impetuous',
-#   'consummate',
-#   'inchoate',
-#   'sedentary',
-#   'incipient',
-#   'volatile',
-#   'stalwart',
-#   'precarious'],
-#  ['stout',
-#   'irrefragable',
-#   'tottering',
-#   'fecund',
-#   'a coincidental',
-#   'an inherited',
-#   'a transient',
-#   'an incessant',
-#   'an intrinsic',
-#   'an ephemeral',
-#   'elocution',
-#   'paean',
-#   'oratory',
-#   'panegyric',
-#   'diatribe',
-#   'harangue',
-#   'discharged',
-#   'repudiated',
-#   'dismissed',
-#   'exculpated'],
-#  ['lionized',
-#   'exonerated',
-#   'intractable',
-#   'enervated',
-#   'obstinate',
-#   'diffident',
-#   'lackadaisical',
-#   'incapacitated',
-#   'hapless',
-#   'guileless',
-#   'duplicitous',
-#   'listless',
-#   'artless',
-#   'mendacious',
-#   'disturbing',
-#   'streamlined',
-#   'coherent',
-#   'unintelligible',
-#   'esoteric',
-#   'controversial'],
-#  ['celebrated',
-#   'histrionic',
-#   'assuaging',
-#   'augmenting',
-#   'debating',
-#   'ignominious',
-#   'inconspicuous',
-#   'famous',
-#   'obscurity',
-#   'indifference',
-#   'mystique',
-#   'fraudulent',
-#   'apocryphal',
-#   'verified',
-#   'inimical to',
-#   'condemned for',
-#   'famous for',
-#   'an abstruse',
-#   'a prolific',
-#   'a terrible'],
-#  ['ineptitude',
-#   'impeccability',
-#   'resilience',
-#   'publicized',
-#   'overlooked',
-#   'discerned',
-#   'because',
-#   'since',
-#   'although',
-#   'incinerated',
-#   'reported',
-#   'understood',
-#   'mellifluous',
-#   'concise',
-#   'stumbling',
-#   'laconic',
-#   'euphonic',
-#   'strident',
-#   'soporific',
-#   'detrimental'],
-#  ['beneficial',
-#   'perceptible',
-#   'deleterious',
-#   'salubrious',
-#   'lampooned',
-#   'extolled',
-#   'lionized',
-#   'disregarded',
-#   'contemplated',
-#   'ridiculed',
-#   'affects',
-#   'mimics',
-#   'contrasts',
-#   'reflects',
-#   'opposes',
-#   'renounces',
-#   'gregarious',
-#   'discourteous',
-#   'obsequious',
-#   'reticent'],
-#  ['scurrilous',
-#   'vagaries',
-#   'misapprehensions',
-#   'repercussions',
-#   'monumental',
-#   'picayune',
-#   'outlandish',
-#   'supercilious',
-#   'perfunctory',
-#   'gregarious',
-#   'a prolix',
-#   'a pithy',
-#   'an abstruse',
-#   'incite',
-#   'parry',
-#   'marshal',
-#   'pacify',
-#   'abrogate',
-#   'rouse',
-#   'intransigent'],
-#  ['noisome',
-#   'restive',
-#   'Considering',
-#   'While',
-#   'Because',
-#   'imprudent',
-#   'cheaper',
-#   'ingenuous',
-#   'poisonous',
-#   'bland',
-#   'toothsome',
-#   'scanty',
-#   'robust',
-#   'singular',
-#   'lucid',
-#   'prosaic',
-#   'abstruse',
-#   'eliminate',
-#   'duplicate',
-#   'preserve'],
-#  ['retain',
-#   'extirpate',
-#   'cultivate',
-#   'remarkable',
-#   'immense',
-#   'pivotal',
-#   'recondite',
-#   'ancient',
-#   'momentous',
-#   'detritus',
-#   'refuge',
-#   'gaudiness',
-#   'bedlam',
-#   'refuse',
-#   'barrenness',
-#   'punctilious',
-#   'vociferous',
-#   'waggish',
-#   'vicious',
-#   'scathing',
-#   'witty'
-#   ]]
+# for x in os.listdir(path_2):
+#     section_path = os.path.join(path_2,x)
+#     for y in os.listdir(section_path):
+#         file = os.path.join(section_path,y)
+#         if(y.__contains__("vocab")):
+#             vocab_list = file_io.readVocabFile(file)
+#             full_chapter_vocab.extend(vocab_list)
+#         elif(y.__contains__("meaning")):
+#             meaning_list = file_io.readMeaningfile(file)
+#             full_chapter_meaning.extend(meaning_list)
+#         else:
+#             example_list = file_io.readExampleFile(file)
+#             full_chapter_example.extend(example_list)
+
+# print(full_chapter_example)
+# for x in full_chapter_vocab:
+#     print(x.split("\t")[0])
+# print(full_chapter_meaning)
+# print(full_chapter_example)
+
+# copy_path = "C:\\Users\\two\\Documents\\GRE-Study\\vocab_source\\full_chapter\\GRE_kaplan_book_24-25"
+# for x in (full_chapter_example):
+#     file_io.writeVocabFile(copy_path,"example.txt",x)
+
+
+
+a = '''devalued
+tarnished
+ridiculed
+vituperated
+impaired
+vast
+meager
+unique
+color
+hardiness
+delicacy
+ignoring
+lacking
+needing
+anecdotal
+imagined
+nominal
+undertake
+eschew
+supplement
+quotidian
+latent
+arresting
+disingenuous
+lax
+authoritarian
+hinted at
+suggested
+manifest
+dilapidation
+depilation
+radiance
+arid
+calm
+humid
+waiting
+unprepared
+anxious
+inundated
+soaked
+sprayed
+selected
+established
+appropriated
+bestowed
+suggested
+proposed
+After
+Although
+Inasmuch as
+Considering
+While
+Because
+overwhelm
+diminish
+obviate
+mitigate
+eliminate
+belittle
+indignantly
+mournfully
+spitefully
+bitterly
+soberly
+melancholically'''
+
+
+b = a.split("\n")
+c = [b[i:i+20] for i in range(0,len(b),20)]
+
+print(c)

@@ -76,7 +76,11 @@ class cambridge_search():
         search_button = self.driver.find_element(By.CLASS_NAME, "bo.iwc.iwc-40.hao.lb0.cdo-search-button.lp-0")
         search_button.click()
         word_dict_search = ""
-        words = self.driver.find_elements(By.CLASS_NAME, "headword.hdb.tw-bw.dhw.dpos-h_hw")
+        try:
+            words = self.driver.find_elements(By.CLASS_NAME, "headword.hdb.tw-bw.dhw.dpos-h_hw")
+        except:
+            time.sleep(2)
+            words = self.driver.find_elements(By.CLASS_NAME, "headword.hdb.tw-bw.dhw.dpos-h_hw")
         pos = self.driver.find_elements(By.CLASS_NAME, "pos.dpos")
         if(len(pos) == 0):
             return list_defin
