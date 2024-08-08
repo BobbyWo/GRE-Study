@@ -308,7 +308,7 @@ class MatchingGameWindow(QMainWindow):
             else:
                 wrongAns_List.append("you did not answered this question!!!!!!!!")
         result_marks = (marks/len(self.Chapter_user_answer_list))*100
-        self.result_window = Ui_MainWindow(result_marks, words, wrongAns_List, correctAns_List,answer_correct)
+        self.result_window = Ui_MainWindow(result_marks, words, wrongAns_List, correctAns_List,answer_correct,"")
         self.result_window.show()
         # self.file_io.write_file(self.vocab_files,"marks.txt",str(result_marks))
         print(self.Chapter_answer_list)

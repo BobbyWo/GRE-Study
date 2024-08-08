@@ -18,13 +18,14 @@ from PyQt5.QtWidgets import *
 
 class Ui_MainWindow(QMainWindow):
 
-    def __init__(self,marks,words,UserAns_List,correctAns_List,answer_correct):
+    def __init__(self,marks,words,UserAns_List,correctAns_List,answer_correct,full_chapter):
         super().__init__()
         self.marks = marks
         self.words = words
         self.UserAns_List = UserAns_List
         self.correctAns_List = correctAns_List
         self.answer_correct = answer_correct
+        self.full_chapter = full_chapter
         self.setFixedSize(800, 1000)
         self.setupUi()
     def setupUi(self):
@@ -128,9 +129,14 @@ class Ui_MainWindow(QMainWindow):
             self.buttonBox.setObjectName("buttonBox")
 
     def YesButtonClicked(self):
-        from matching_game_window import MatchingGameWindow
-        self.matching_game = MatchingGameWindow()
-        self.matching_game.show()
+        if self.full_chapter == "full_chapter":
+            from matching_game_window_full_chapter import MatchingGameWindowFullChapter
+            self.matching_game = MatchingGameWindowFullChapter()
+            self.matching_game.show()
+        else:
+            from matching_game_window import MatchingGameWindow
+            self.matching_game = MatchingGameWindow()
+            self.matching_game.show()
         self.deleteLater()
 
 

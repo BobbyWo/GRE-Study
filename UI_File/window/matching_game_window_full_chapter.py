@@ -12,7 +12,7 @@ from PyQt5.QtCore import *
 import math
 from Study_tools_functions import File_io
 
-class MatchingGameWindow(QMainWindow):
+class MatchingGameWindowFullChapter(QMainWindow):
 
     def __init__(self):
         super().__init__()
@@ -324,7 +324,7 @@ class MatchingGameWindow(QMainWindow):
         words_set = list(set(self.random_words)-set(self.selected_vocab_list))
         for word in words_set:
             self.file_io.writeSelectedVocabFile(self.vocab_files, "selected.txt", word)
-        self.result_window = Ui_MainWindow(result_marks, words, wrongAns_List, correctAns_List,answer_correct)
+        self.result_window = Ui_MainWindow(result_marks, words, wrongAns_List, correctAns_List,answer_correct,"full_chapter")
         self.result_window.show()
         # self.file_io.write_file(self.vocab_files,"marks.txt",str(result_marks))
         print(self.Chapter_answer_list)
@@ -335,7 +335,7 @@ class MatchingGameWindow(QMainWindow):
 if __name__ == "__main__":
     app = QApplication([])
     app.setStyleSheet(qdarkstyle.load_stylesheet_pyqt5())
-    w = MatchingGameWindow()
+    w = MatchingGameWindowFullChapter()
     w.show()
 
     app.exec_()
