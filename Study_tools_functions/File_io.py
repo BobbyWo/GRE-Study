@@ -72,15 +72,6 @@ class file_io():
                     words = lines.split("\n")
                     vocab_list.extend(words)
 
-    def readWholeDir(self):
-        dir = os.listdir(self.dir_path)
-        vocab_list = []
-        for file in dir:
-            if (file.__contains__("txt")):
-                with open(os.path.join(self.dir_path, file)) as f:
-                    lines = f.read()
-                    words = lines.split("\n")
-                    vocab_list.extend(words)
 
     def writeVocabFile(self,file_path,file_name,content):
         content = str(content).replace("\n","\t")
@@ -145,6 +136,10 @@ class file_io():
             with open(file_path, 'a', encoding="utf-8") as f:
                 f.writelines(content + "\n")
                 f.close()
+    def clean_file(self,file_path,file_name):
+        file_path = os.path.join(file_path, file_name)
+        with open(file_path, 'w', encoding="utf-8") as f:
+            f.close()
 
     def create_folder(self,folder_path,file_name):
         file_path = os.path.join(folder_path,file_name)

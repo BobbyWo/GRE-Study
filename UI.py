@@ -9,7 +9,7 @@ import qdarkstyle
 import pyperclip
 
 from Study_tools_functions import notion, cambridge_search, File_io
-from Study_tools_functions.Snip_window import SnipWidget
+from UI_File.window.Snip_window import SnipWidget
 from UI_File.combo_box.UI_combo_box import UI_combo_box
 from UI_File.window.create_folder_window import create_folder_window
 from UI_File.window.matching_game_window import MatchingGameWindow

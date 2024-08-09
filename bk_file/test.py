@@ -9,7 +9,7 @@ import pyperclip
 
 from PyQt5.QtCore import Qt
 from Study_tools_functions import notion, cambridge_search, File_io
-from Study_tools_functions.Snip_window import SnipWidget
+from UI_File.window.Snip_window import SnipWidget
 from UI_File.window.matching_game_window import MatchingGameWindow
 from UI_File.button.UI_button import UI_button
 class MyWindow(QMainWindow):

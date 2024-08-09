@@ -8,7 +8,7 @@ import qdarkstyle
 import pyperclip
 
 from Study_tools_functions import notion, cambridge_search, File_io
-from Study_tools_functions.Snip_window import SnipWidget
+from UI_File.window.Snip_window import SnipWidget
 from UI_File.window.matching_game_window import MatchingGameWindow
 class MyWindow(QMainWindow):
     def __init__(self, parent=None):
