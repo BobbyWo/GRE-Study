@@ -83,6 +83,12 @@ class MatchingGameWindowFullChapter(QMainWindow):
             self.selected_vocab_list = self.file_io.readExampleFile(selected_vocab_file_path)
 
         self.removed_dup_word_list = list(set(self.word_list) - set(self.selected_vocab_list))
+        if(len(self.removed_dup_word_list) == 0):
+            from revised_full_chapter_window import revised_full_chapter_window
+            self.revised_full_chapter_window = revised_full_chapter_window(self.current_chapter)
+            self.revised_full_chapter_window.show()
+            self.revised_full_chapter_window.revised.connect(self.remove_selected_record)
+            return
 
         random_list = random.choices([self.removed_dup_word_list,self.selected_vocab_list],[0.9,0.1],k=4)
         for i,selected_list in enumerate(random_list):
@@ -91,18 +97,26 @@ class MatchingGameWindowFullChapter(QMainWindow):
             else:
                 print(f"{i} : from vocab_list")
         self.random_words = []
+        inserted = False
         for word in random_list:
             if word is not None and word != []:
-                self.random_words.extend(random.sample(word,5))
-
+                if(len(word) >= 5):
+                    self.random_words.extend(random.sample(word,5))
+                else:
+                    if(not inserted):
+                        self.random_words.extend(random.sample(word,len(word)))
+                        inserted = True
         shuffled_words = []
         shuffled_words.extend(self.random_words)
+        # shuffled_words.extend(list(set(self.random_words)))
         # shuffled_words = random.sample(self.word_list, len(self.word_list))
         page_index = 0
         self.Chapter_answer_list = []
         # self.Chapter_user_answer_list = [-1] * len(self.word_list)
         self.Chapter_user_answer_list = [-1] * len(shuffled_words)
         self.Chapter_answer_box_list = []
+
+        self.max_page =  math.ceil(len(self.random_words) / 5)
         while(len(shuffled_words)>0):
             if(len(shuffled_words) >= 5):
                 random_words = shuffled_words[0:5]
@@ -118,6 +132,9 @@ class MatchingGameWindowFullChapter(QMainWindow):
             self.Chapter_answer_list.extend(index_list)
         self.setCentralWidget(self.pages_stackWidget)
 
+    def remove_selected_record(self):
+        self.file_io.clean_file(self.vocab_files,"selected.txt")
+        print("records in selected removed")
     def delete_chapter_box(self):
         print(self.select_chapter.count())
         # widgets = (self.select_chapter.itemAt(i).widget() for i in
@@ -194,6 +211,11 @@ class MatchingGameWindowFullChapter(QMainWindow):
         button_layout = self.setup_button(page_index)
         one_page_layout.addStretch(1)
         one_page_layout.addLayout(button_layout)
+
+        #set up page num
+        page_num_layout = self.setup_page_num(page_index)
+        one_page_layout.addStretch(1)
+        one_page_layout.addLayout(page_num_layout)
 
         one_page_layout.addStretch(1)
         self.takeCentralWidget()
@@ -277,8 +299,17 @@ class MatchingGameWindowFullChapter(QMainWindow):
             submit_button = QPushButton("Submit")
             submit_button.clicked.connect(self.submitButtonClicked)
             button_layout.addWidget(submit_button)
-
+        # else:
+        #     button_layout.addWidget(next_button)
         return button_layout
+
+    def setup_page_num(self,page_index):
+        #set Button
+        page_num_layout = QHBoxLayout()
+        page_num_layout.setAlignment(Qt.AlignCenter)
+        page_label = QLabel(f"{page_index+1}/{self.max_page}")
+        page_num_layout.addWidget(page_label)
+        return page_num_layout
 
     def checkCoverage(self, box_list):
         Current_page_answerbox_list = (self.Chapter_answer_box_list[self.pages_stackWidget.currentIndex()])
@@ -313,13 +344,14 @@ class MatchingGameWindowFullChapter(QMainWindow):
     def submitButtonClicked(self):
 
         marks = 0
-        words, wrongAns_List, correctAns_List,answer_correct = [],[],[],[]
+        words, wrongAns_List, correctAns_List,answer_correct,wrong_word_list = [],[],[],[],[]
         for index,answer in enumerate(self.Chapter_answer_list):
             if(answer == self.Chapter_user_answer_list[index]):
                 marks += 1
                 answer_correct.append(True)
             else:
                 answer_correct.append(False)
+                wrong_word_list.append(self.word_list[answer])
             words.append(self.word_list[answer])
             correctAns_List.append(self.meaning_list[answer])
             if self.Chapter_user_answer_list[index] != -1:
@@ -327,7 +359,7 @@ class MatchingGameWindowFullChapter(QMainWindow):
             else:
                 wrongAns_List.append("you did not answered this question!!!!!!!!")
         result_marks = (marks/len(self.Chapter_user_answer_list))*100
-        words_set = list(set(self.random_words)-set(self.selected_vocab_list))
+        words_set = list(set(self.random_words)-set(self.selected_vocab_list)-set(wrong_word_list))
         for word in words_set:
             self.file_io.writeSelectedVocabFile(self.vocab_files, "selected.txt", word)
         self.result_window = Ui_MainWindow(result_marks, words, wrongAns_List, correctAns_List,answer_correct,"full_chapter")
